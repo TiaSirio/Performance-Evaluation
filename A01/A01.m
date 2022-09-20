@@ -24,7 +24,7 @@ table.hour = hour(table.timeStampConverted);
 table.minute = minute(table.timeStampConverted);
 %table.second = second(table.timeStampConverted);
 table.second = datetime(table.timeStamp,'InputFormat','dd/MMM/yyyy HH:mm:ss.SSS', 'Format', 'ss');
-table.millisecond = datetime(table.timeStamp,'InputFormat','dd/MMM/yyyy HH:mm:ss.SSS', 'Format', 'SSS');
+table.millisecond = datetime(table.timeStamp,'InputFormat','dd/MMM/yyyy HH:mm:ss.SSS', 'Format', 'SSS')
 %table.millisecond = milliseconds(table.millisecond);
 
-table
+%table.jobsEntering = milliseconds(table.timeStampConverted);
