@@ -14,16 +14,42 @@ table = log(:,1);
 A = size(table,1); % Arrivals
 C = A; % Completions
 
+serviceTime = seconds(1.2);
+
 T = zeros;
 
 for i = 1 : size(table)
-    table.arrivalTimestamp(i) = T;
+    table.arrivalTimestamp(i) = seconds(T);
     T = T + table{i, 1};
 end
 
-Lambda = A / T; % Arrival rate
+%Lambda2 = A / T;
 
-X = C / T; % Throughput
+AOverdue = seconds(sum(table.interarrivals) / A); % Average interarrival time
 
-AOverdue = sum(table.interarrivals) / A; % Average interarrival time
+Lambda = 1 / seconds(AOverdue); % Arrival rate
 
+table.servedTime(1) = seconds(zeros);
+
+for i = 2 : size(table)
+    table.servedTime(i) = max(table.servedTime(i - 1) + serviceTime, table.arrivalTimestamp(i));
+end
+
+table.completions = table.servedTime + serviceTime;
+
+Ri = seconds(table.completions - table.arrivalTimestamp);
+
+R = seconds(sum(Ri)) / C; % Average response time
+
+standardDeviation = std(table.interarrivals) % Standard deviation
+
+
+
+fprintf(1, "Average inter-arrival time:")
+AOverdue
+fprintf(1, "Arrival Rate:")
+Lambda
+fprintf(1, "Standard deviation:")
+standardDeviation
+fprintf(1, "Average response time:")
+R
