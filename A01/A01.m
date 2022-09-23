@@ -3,10 +3,8 @@ clc, clear all
 filename = "apache1.log";
 filename2 = "apache2.log";
 
-log = readtable(filename);
-%log2 = readtable(filename2);
-
-%finalLog = vertcat(log, log2);
+%log = readtable(filename);
+log = readtable(filename2);
 
 log.Properties.VariableNames = ["IP","string1","string2","timeStamp","value1","HTTP-Request","statusCode","value2","string3","browser","serviceTimeMilliseconds"];
 
@@ -56,7 +54,7 @@ S = B / C; % Average service time
 
 Ri = seconds(table.completions - table.timeStampConverted); % Response time
 
-W = seconds(sum(Ri)); % Workload
+W = seconds(sum(Ri)); % W
 
 R = W / C; % Average response time
 
@@ -100,12 +98,6 @@ fprintf(1, "Average Number of Jobs:")
 N
 fprintf(1, "Average Response Time:")
 R
-fprintf(1, "Pr(R < 1):")
-probabilityResponseTimeTau1
-fprintf(1, "Pr(R < 5):")
-probabilityResponseTimeTau5
-fprintf(1, "Pr(R < 10):")
-probabilityResponseTimeTau10
 fprintf(1, "Pr(m = 0):")
 probabilityOfJob0
 fprintf(1, "Pr(m = 1):")
@@ -114,3 +106,9 @@ fprintf(1, "Pr(m = 2):")
 probabilityOfJob2
 fprintf(1, "Pr(m = 2):")
 probabilityOfJob3
+fprintf(1, "Pr(R < 1):")
+probabilityResponseTimeTau1
+fprintf(1, "Pr(R < 5):")
+probabilityResponseTimeTau5
+fprintf(1, "Pr(R < 10):")
+probabilityResponseTimeTau10
