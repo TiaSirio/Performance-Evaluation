@@ -3,8 +3,8 @@ clc, clear all
 filename = "apache1.log";
 filename2 = "apache2.log";
 
-%log = readtable(filename);
-log = readtable(filename2);
+log = readtable(filename);
+%log = readtable(filename2);
 
 log.Properties.VariableNames = ["IP","string1","string2","timeStamp","value1","HTTP-Request","statusCode","value2","string3","browser","serviceTimeMilliseconds"];
 
@@ -29,6 +29,8 @@ table.completions = table.servedTime + table.serviceTimeMilliseconds;
 for i = 1 : size(table) - 1
     table.Ai(i) = seconds(table.timeStampConverted(i + 1) - table.timeStampConverted(i));
 end
+
+table.Ai(A) = seconds(table.completions(A) - table.timeStampConverted(A));
 
 Ai = table.Ai; % Interarrivals times
 
@@ -77,6 +79,40 @@ probabilityOfJob0 = seconds(sum(dt .* (NofT(1:end - 1,:) == 0))) / T;
 probabilityOfJob1 = seconds(sum(dt .* (NofT(1:end - 1,:) == 1))) / T;
 probabilityOfJob2 = seconds(sum(dt .* (NofT(1:end - 1,:) == 2))) / T;
 probabilityOfJob3 = seconds(sum(dt .* (NofT(1:end - 1,:) == 3))) / T;
+
+%Error handling
+AOverdueCheck = seconds(1 / Lambda);
+if (round(seconds(AOverdueCheck),10) ~= round(seconds(AOverdue),10))
+    error("Average inter-arrival time not corrispondent!")
+end
+
+TCheck = sum(Ai);
+if (round(TCheck,10) ~= round(T,10))
+    error("T not corrispondent!")
+end
+
+SCheck = sum(table.serviceTimeMilliseconds) / C;
+if (SCheck ~= S)
+    error("S not corrispondent!")
+end
+
+UCheck = X * seconds(S);
+if (round(UCheck,10) ~= round(U,10))
+    error("U not corrispondent!")
+end
+
+NCheck = X * seconds(R);
+if (round(NCheck,10) ~= round(N,10))
+    error("N not corrispondent!")
+end
+
+if (U >= 1)
+    error("Not stable!")
+end
+
+if (X * S >= 1)
+    error("Not stable!")
+end
 
 
 

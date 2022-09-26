@@ -5,10 +5,10 @@ filename2 = "Log2.csv";
 filename3 = "Log3.csv";
 filename4 = "Log4.csv";
 
-%log = readtable(filename);
+log = readtable(filename);
 %log = readtable(filename2);
 %log = readtable(filename3);
-log = readtable(filename4);
+%log = readtable(filename4);
 
 log.Properties.VariableNames = "interarrivals";
 
@@ -19,15 +19,13 @@ C = A; % Completions
 
 serviceTime = seconds(1.2);
 
-T = zeros;
+temp = zeros;
 table.arrivalTimestamp(1) = seconds(zeros);
 
 for i = 2 : size(table)
-    T = T + table{i, 1};
-    table.arrivalTimestamp(i) = seconds(T);
+    temp = temp + table{i, 1};
+    table.arrivalTimestamp(i) = seconds(temp);
 end
-
-%Lambda2 = A / T;
 
 AOverdue = seconds(sum(table.interarrivals) / A); % Average interarrival time
 
@@ -47,9 +45,14 @@ R = seconds(sum(Ri)) / C; % Average response time
 
 standardDeviation = std(table.interarrivals); % Standard deviation
 
-%XY = [table.interarrivals(1:end - 1), table.interarrivals(2:end)];
 XY = [Ri(1:end - 1), Ri(2:end)];
-plot(XY(:,1), XY(:,2), ".")
+plot(XY(:,1), XY(:,2), ".b")
+
+%Error handling
+AOverdueCheck = seconds(1 / Lambda);
+if (round(seconds(AOverdueCheck),10) ~= round(seconds(AOverdue),10))
+    error("Average inter-arrival time not corrispondent!")
+end
 
 
 
