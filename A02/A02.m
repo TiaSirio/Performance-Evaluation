@@ -6,9 +6,9 @@ filename3 = "Log3.csv";
 filename4 = "Log4.csv";
 
 %log = readtable(filename);
-%log = readtable(filename2);
+log = readtable(filename2);
 %log = readtable(filename3);
-log = readtable(filename4);
+%log = readtable(filename4);
 
 log.Properties.VariableNames = "interarrivals";
 
@@ -26,6 +26,8 @@ for i = 2 : size(table)
     table.arrivalTimestamp(i) = seconds(temp);
     temp = temp + table{i, 1};
 end
+
+%table.arrivalTimestamp(size(table) + 1) = seconds(temp);
 
 AOverdue = seconds(sum(table.interarrivals) / A); % Average interarrival time
 
