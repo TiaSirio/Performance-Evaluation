@@ -76,4 +76,55 @@ PearsonCorrelationCoefficient2 = sum((table.data(1:end - 2, :) - EX) .* (table.d
 PearsonCorrelationCoefficient3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
 
 %y = [lag1, lag2, lag3];
-%plot([1:3], y, ".");
+%plot(1:3, y, ".");
+
+fprintf(1, "EX:")
+EX
+fprintf(1, "Second moment:")
+secondMoment
+fprintf(1, "Third moment:")
+thirdMoment
+fprintf(1, "Fourth moment:")
+fourthMoment
+fprintf(1, "Fifth moment:")
+fifthMoment
+fprintf(1, "Second centered moment:")
+secondCenteredMoment
+fprintf(1, "Third centered moment:")
+thirdCenteredMoment
+fprintf(1, "Fourth centered moment:")
+fourthCenteredMoment
+fprintf(1, "Fifth centered moment:")
+fifthCenteredMoment
+fprintf(1, "Third Standardized moment:")
+thirdStandardizedMoment
+fprintf(1, "Fourth Standardized moment:")
+fourthStandardizedMoment
+fprintf(1, "Standard deviation:")
+std
+fprintf(1, "Skewness:")
+skewness
+fprintf(1, "Kurtosis:")
+kurtosis
+fprintf(1, "Percentile 10:")
+percentile10
+fprintf(1, "Percentile 25:")
+percentile25
+fprintf(1, "Percentile 50:")
+percentile50
+fprintf(1, "Percentile 75:")
+percentile75
+fprintf(1, "Percentile 90:")
+percentile90
+fprintf(1, "Cross-covariance for lag 1:")
+lag1
+fprintf(1, "Cross-covariance for lag 2:")
+lag2
+fprintf(1, "Cross-covariance for lag 3:")
+lag3
+fprintf(1, "Pearson Correlation Coefficient for lags 1:")
+PearsonCorrelationCoefficient1
+fprintf(1, "Pearson Correlation Coefficient for lags 2:")
+PearsonCorrelationCoefficient2
+fprintf(1, "Pearson Correlation Coefficient for lags 3:")
+PearsonCorrelationCoefficient3
