@@ -5,10 +5,10 @@ filename2 = "Data2.txt";
 filename3 = "Data3.txt";
 filename4 = "Data4.txt";
 
-log = readtable(filename);
-log2 = readtable(filename2);
-log3 = readtable(filename3);
-log4 = readtable(filename4);
+%log = readtable(filename);
+%log = readtable(filename2);
+%log = readtable(filename3);
+log = readtable(filename4);
 
 table = log(:,1);
 
@@ -18,7 +18,7 @@ tableSorted = sortrows(table(:,1));
 
 N = size(table, 1);
 
-%plot(tableSorted.Data1, [1:N]/N, "+");
+%plot(tableSorted.data, [1:N]/N, "+");
 
 EX = sum(table.data) / N;
 
@@ -43,6 +43,8 @@ sigm = sqrt(sum((table.data - EX) .^2) / N);
 thirdStandardizedMoment = sum(((table.data - EX) / sigm) .^3) / N;
 
 fourthStandardizedMoment = sum(((table.data - EX) / sigm) .^4) / N;
+
+fifthStandardizedMoment = sum(((table.data - EX) / sigm) .^5) / N;
 
 std = std(table.data);
 
@@ -76,7 +78,7 @@ PearsonCorrelationCoefficient2 = sum((table.data(1:end - 2, :) - EX) .* (table.d
 PearsonCorrelationCoefficient3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
 
 %y = [lag1, lag2, lag3];
-%plot(1:3, y, ".");
+%plot([1:3], y, ".");
 
 fprintf(1, "EX:")
 EX
@@ -100,6 +102,8 @@ fprintf(1, "Third Standardized moment:")
 thirdStandardizedMoment
 fprintf(1, "Fourth Standardized moment:")
 fourthStandardizedMoment
+fprintf(1, "Fifth Standardized moment:")
+fifthStandardizedMoment
 fprintf(1, "Standard deviation:")
 std
 fprintf(1, "Skewness:")
