@@ -1,4 +1,4 @@
-clc, clear all
+clc, clear
 
 filename = "Log1.csv";
 filename2 = "Log2.csv";
@@ -6,9 +6,9 @@ filename3 = "Log3.csv";
 filename4 = "Log4.csv";
 
 %log = readtable(filename);
-log = readtable(filename2);
+%log = readtable(filename2);
 %log = readtable(filename3);
-%log = readtable(filename4);
+log = readtable(filename4);
 
 log.Properties.VariableNames = "interarrivals";
 
@@ -47,7 +47,8 @@ R = seconds(sum(Ri)) / C; % Average response time
 
 standardDeviation = std(table.interarrivals); % Standard deviation
 
-XY = [Ri(1:end - 1), Ri(2:end)];
+%XY = [Ri(1:end - 1), Ri(2:end)];
+XY = [table.interarrivals(1:end - 1), table.interarrivals(2:end)];
 plot(XY(:,1), XY(:,2), ".b")
 
 %Error handling

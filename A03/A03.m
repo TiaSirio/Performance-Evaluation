@@ -1,4 +1,4 @@
-clc, clear all
+clc, clear
 
 filename = "Data1.txt";
 filename2 = "Data2.txt";
@@ -52,13 +52,13 @@ skewness = skewness(table.data);
 
 kurtosis = kurtosis(table.data);
 
+coefficientOfVariation = sigm / EX;
+
 h10 = (N - 1) * 10 / 100 + 1;
 h25 = (N - 1) * 25 / 100 + 1;
 h50 = (N - 1) * 50 / 100 + 1;
 h75 = (N - 1) * 75 / 100 + 1;
 h90 = (N - 1) * 90 / 100 + 1;
-
-%usare il normal array e non il sorted (penso (riguardare registrazione (o forse il contrario)))
 
 percentile10 = tableSorted.data(floor(h10),1) + (h10 - floor(h10)) * (tableSorted.data(floor(h10) + 1, 1) - tableSorted.data(floor(h10),1));
 percentile25 = tableSorted.data(floor(h25),1) + (h25 - floor(h25)) * (tableSorted.data(floor(h25) + 1, 1) - tableSorted.data(floor(h25),1));
@@ -66,19 +66,18 @@ percentile50 = tableSorted.data(floor(h50),1) + (h50 - floor(h50)) * (tableSorte
 percentile75 = tableSorted.data(floor(h75),1) + (h75 - floor(h75)) * (tableSorted.data(floor(h75) + 1, 1) - tableSorted.data(floor(h75),1));
 percentile90 = tableSorted.data(floor(h90),1) + (h90 - floor(h90)) * (tableSorted.data(floor(h90) + 1, 1) - tableSorted.data(floor(h90),1));
 
-%USE THE REAL ONE
-
 lag1 = sum((table.data(1:end - 1, :) - EX) .* (table.data(2:end, :) - EX)) / (N - 1);
 lag2 = sum((table.data(1:end - 2, :) - EX) .* (table.data(3:end, :) - EX)) / (N - 1);
 lag3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 1);
 
-%not sure
 PearsonCorrelationCoefficient1 = sum((table.data(1:end - 1, :) - EX) .* (table.data(2:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
 PearsonCorrelationCoefficient2 = sum((table.data(1:end - 2, :) - EX) .* (table.data(3:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
 PearsonCorrelationCoefficient3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
 
 %y = [lag1, lag2, lag3];
 %plot([1:3], y, ".");
+
+
 
 fprintf(1, "EX:")
 EX
@@ -104,6 +103,8 @@ fprintf(1, "Fourth Standardized moment:")
 fourthStandardizedMoment
 fprintf(1, "Fifth Standardized moment:")
 fifthStandardizedMoment
+fprintf(1, "Coefficient of variation:")
+coefficientOfVariation
 fprintf(1, "Standard deviation:")
 std
 fprintf(1, "Skewness:")

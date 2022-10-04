@@ -1,4 +1,4 @@
-clc, clear all
+clc, clear
 
 filename = "apache1.log";
 filename2 = "apache2.log";
