@@ -1,5 +1,11 @@
 clc, clear
 
+fileOutput = "finalResult.txt";
+
+if exist(fileOutput, 'file') == 2
+  delete(fileOutput);
+end
+
 filename = "Log1.csv";
 filename2 = "Log2.csv";
 filename3 = "Log3.csv";

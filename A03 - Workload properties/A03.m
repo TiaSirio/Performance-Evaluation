@@ -18,7 +18,7 @@ tableSorted = sortrows(table(:,1));
 
 N = size(table, 1);
 
-%plot(tableSorted.data, [1:N]/N, "+");
+plot(tableSorted.data, (1:N)/N, "+b");
 
 EX = sum(table.data) / N;
 
@@ -40,17 +40,17 @@ fifthCenteredMoment = sum((table.data - EX) .^5) / N;
 
 sigm = sqrt(sum((table.data - EX) .^2) / N);
 
-thirdStandardizedMoment = sum(((table.data - EX) / sigm) .^3) / N;
+thirdStandardizedMoment = sum(((table.data - EX) ./ sigm) .^3) / N;
 
-fourthStandardizedMoment = sum(((table.data - EX) / sigm) .^4) / N;
+fourthStandardizedMoment = sum(((table.data - EX) ./ sigm) .^4) / N;
 
-fifthStandardizedMoment = sum(((table.data - EX) / sigm) .^5) / N;
+fifthStandardizedMoment = sum(((table.data - EX) ./ sigm) .^5) / N;
 
 std = std(table.data);
 
 skewness = skewness(table.data);
 
-kurtosis = kurtosis(table.data);
+kurtosis = kurtosis(table.data) - 3;
 
 coefficientOfVariation = sigm / EX;
 
@@ -60,22 +60,44 @@ h50 = (N - 1) * 50 / 100 + 1;
 h75 = (N - 1) * 75 / 100 + 1;
 h90 = (N - 1) * 90 / 100 + 1;
 
-percentile10 = tableSorted.data(floor(h10),1) + (h10 - floor(h10)) * (tableSorted.data(floor(h10) + 1, 1) - tableSorted.data(floor(h10),1));
-percentile25 = tableSorted.data(floor(h25),1) + (h25 - floor(h25)) * (tableSorted.data(floor(h25) + 1, 1) - tableSorted.data(floor(h25),1));
-percentile50 = tableSorted.data(floor(h50),1) + (h50 - floor(h50)) * (tableSorted.data(floor(h50) + 1, 1) - tableSorted.data(floor(h50),1));
-percentile75 = tableSorted.data(floor(h75),1) + (h75 - floor(h75)) * (tableSorted.data(floor(h75) + 1, 1) - tableSorted.data(floor(h75),1));
-percentile90 = tableSorted.data(floor(h90),1) + (h90 - floor(h90)) * (tableSorted.data(floor(h90) + 1, 1) - tableSorted.data(floor(h90),1));
+percentile10 = tableSorted.data(floor(h10), 1) + (h10 - floor(h10)) * (tableSorted.data(floor(h10) + 1, 1) - tableSorted.data(floor(h10), 1));
+percentile25 = tableSorted.data(floor(h25), 1) + (h25 - floor(h25)) * (tableSorted.data(floor(h25) + 1, 1) - tableSorted.data(floor(h25), 1));
+percentile50 = tableSorted.data(floor(h50), 1) + (h50 - floor(h50)) * (tableSorted.data(floor(h50) + 1, 1) - tableSorted.data(floor(h50), 1));
+percentile75 = tableSorted.data(floor(h75), 1) + (h75 - floor(h75)) * (tableSorted.data(floor(h75) + 1, 1) - tableSorted.data(floor(h75), 1));
+percentile90 = tableSorted.data(floor(h90), 1) + (h90 - floor(h90)) * (tableSorted.data(floor(h90) + 1, 1) - tableSorted.data(floor(h90), 1));
 
 lag1 = sum((table.data(1:end - 1, :) - EX) .* (table.data(2:end, :) - EX)) / (N - 1);
-lag2 = sum((table.data(1:end - 2, :) - EX) .* (table.data(3:end, :) - EX)) / (N - 1);
-lag3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 1);
+lag2 = sum((table.data(1:end - 2, :) - EX) .* (table.data(3:end, :) - EX)) / (N - 2);
+lag3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 3);
 
 PearsonCorrelationCoefficient1 = sum((table.data(1:end - 1, :) - EX) .* (table.data(2:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
-PearsonCorrelationCoefficient2 = sum((table.data(1:end - 2, :) - EX) .* (table.data(3:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
-PearsonCorrelationCoefficient3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 1) ./ (sigm .^ 2);
+PearsonCorrelationCoefficient2 = sum((table.data(1:end - 2, :) - EX) .* (table.data(3:end, :) - EX)) / (N - 2) ./ (sigm .^ 2);
+PearsonCorrelationCoefficient3 = sum((table.data(1:end - 3, :) - EX) .* (table.data(4:end, :) - EX)) / (N - 3) ./ (sigm .^ 2);
 
-%y = [lag1, lag2, lag3];
-%plot([1:3], y, ".");
+percentile10Check = prctile(table2array(tableSorted), 10);
+if (round(percentile10Check,3) ~= round(percentile10,3))
+    error("Percentile10 not corrispondent!")
+end
+
+percentile25Check = prctile(table2array(tableSorted), 25);
+if (round(percentile25Check,3) ~= round(percentile25,3))
+    error("Percentile25 not corrispondent!")
+end
+
+percentile50Check = prctile(table2array(tableSorted), 50);
+if (round(percentile50Check,3) ~= round(percentile50,3))
+    error("Percentile50 not corrispondent!")
+end
+
+percentile75Check = prctile(table2array(tableSorted), 75);
+if (round(percentile75Check,3) ~= round(percentile75,3))
+    error("Percentile75 not corrispondent!")
+end
+
+percentile90Check = prctile(table2array(tableSorted), 90);
+if (round(percentile90Check,2) ~= round(percentile90,2))
+    error("Percentile90 not corrispondent!")
+end
 
 
 
@@ -103,12 +125,12 @@ fprintf(1, "Fourth Standardized moment:")
 fourthStandardizedMoment
 fprintf(1, "Fifth Standardized moment:")
 fifthStandardizedMoment
-fprintf(1, "Coefficient of variation:")
-coefficientOfVariation
 fprintf(1, "Standard deviation:")
 std
-fprintf(1, "Skewness:")
-skewness
+fprintf(1, "Coefficient of variation:")
+coefficientOfVariation
+%fprintf(1, "Skewness:")
+%skewness
 fprintf(1, "Kurtosis:")
 kurtosis
 fprintf(1, "Percentile 10:")
