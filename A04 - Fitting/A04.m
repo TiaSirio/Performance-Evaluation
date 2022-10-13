@@ -54,8 +54,9 @@ yUnif = max(0, min(1, (t - a_unif) / (b_unif - a_unif)));
 %legend('Data', 'Exponential distribution', 'Uniform distribution')
 
 %Hypo-exponential distribution - Method of Moments
-if coefficientOfVariation < 1
-    pars = [1, 2];
+%if coefficientOfVariation < 1
+    pars = [1/(0.3 * firstMoment), 1/(0.7 * firstMoment)];
+    %pars = [1,2];
 
     HypExpMoments = @(p) [(1/p(1,1) + 1/p(1,2)), 2 * (1/p(1,1)^2 + 1/(p(1,1) * p(1,2) + 1/p(1,2)^2))];
 
@@ -71,47 +72,104 @@ if coefficientOfVariation < 1
     %plot(tableSelectedSorted, (1:N)/N, "+b", t, yExp, "-c", t, yUnif, ".r", t, yHypExp, "xy")
     %plot(tableSelectedSorted, (1:N)/N, ".b", t, yExp, ".k", t, yUnif, ".r", t, yHypExp, ".y")
     %legend('Data', 'Exponential distribution', 'Uniform distribution', 'Hypo-exponential distribution')
+    
     %plot(tableSelectedSorted, (1:N)/N, t, yExp, t, yUnif, t, yHypExp)
-end
+%end
 
 %{
 %Hyper-exponential distribution - Method of Moments
-if coefficientOfVariation > 1
-    lam = [1,2];
-    prob = [0.4, 0.6];
+%if coefficientOfVariation > 1
+    %lam = [1/(0.8 * firstMoment), 1/(1.2 * firstMoment)]; %[1,2];
+    lam1 = 1/(0.8 * firstMoment);
+    lam2 = 1/(1.2 * firstMoment);
+    prob = 0.4;
 
-    HyperExpMoments = @(l, p) [(p(1,1) / l(1,1)) + ((1 - p(1,1)) / l(1,2)), 2 * (p(1,1) / l(1,1)^2) + ((1 - p(1,1)) / l(1,2)^2)];
+    %HyperExpMoments = @(l, p) [(p(1,1) / l(1,1)) + ((1 - p(1,1)) / l(1,2)), 2 * (p(1,1) / l(1,1)^2) + ((1 - p(1,1)) / l(1,2)^2)];
+    HyperExpMoments = @(l, p) [(p / l(1,1)) + ((1 - p) / l(1,2)), 2 * (p / l(1,1)^2) + ((1 - p) / l(1,2)^2)];
+    %HyperExpMoments = @(l1, l2, p) [(p / l1) + ((1 - p) / l2), 2 * (p / l1^2) + ((1 - p) / l2^2)];
 
     FunctionHyEM = @(l, p) (HyperExpMoments(l, p) ./ [firstMoment, secondMoment] - 1);
+    %FunctionHyEM = @(l1, l2, p) (HyperExpMoments(l1, l2, p) ./ [firstMoment, secondMoment] - 1);
 
     resultOfHyEM = fsolve(FunctionHyEM, [lam, prob]);
-    clc
+    %resultOfHyEM = fsolve(FunctionHyEM, [lam1, lam2, prob]);
+    %clc
 
+    %HyperExpCDF = @(l, p, t) 1 - sum(p * exp(-l * t));
     HyperExpCDF = @(l, p, t) 1 - sum(p * exp(-l * t));
 
     yHyperExp = HyperExpCDF(resultOfHyEM, t);
 
-    plot(tableSelectedSorted, (1:N)/N, ".b", t, yExp, ".k", t, yUnif, ".r", t, yHypExp, ".y", t, yHyperExp, ".m")
-    legend('Data', 'Exponential distribution', 'Uniform distribution', 'Hypo-exponential distribution', 'Hyper-exponential distribution')
-end
+    %plot(tableSelectedSorted, (1:N)/N, ".b", t, yExp, ".k", t, yUnif, ".r", t, yHypExp, ".y", t, yHyperExp, ".m")
+    %legend('Data', 'Exponential distribution', 'Uniform distribution', 'Hypo-exponential distribution', 'Hyper-exponential distribution')
+%end
 %}
 
+
+
+
+
+%{
+
+lambda = [0.8 / firstMoment, 1.2 / firstMoment];
+prob = 0.4;
+    
+HyperExpMoments = @(l1, l2, p) [p/l1 + (1 - p)/l2, 2 * (p/(l1^2) + (1 - p)/(l2^2)), 6 * (p/(l1^3) + ((1 - p)/(l2^2)))];
+
+FunctionHerEM = @(p) (HyperExpMoments(p(1,1), p(1,2), p(1,3)) ./ [firstMoment, secondMoment, thirdMoment] - 1);
+
+var = [lambda(1,1), lambda(1,2), prob];
+
+resultsOfHerEM = fsolve(FunctionHerEM, var);
+clc
+
+%Da fixare
+HyperExpCDF = @(p, t) 1 - 1/(p(1,2)-p(1,1))*(p(1,2)*exp(-p(1,1)*t)-p(1,1)*exp(-p(1,2)*t));
+
+y2HEM = HyperExpCDF(resultsOfHerEM, t);
+
+
+%}
+
+
+
+
+%{
+
+lambda = [0.8 / firstMoment, 1.2 / firstMoment];
+    prob = 0.4;
+    
+    HyperExpMoments = @(p, t) [t/p(1,1) + (1-t)/p(1,2), 2 * (t/(p(1,1)^2) + (1-t)/(p(1,2)^2)), 6 * (t/(p(1,1)^3) + ((1-t)/(p(1,2)^2)))];
+
+    FunctionHerEM = @(p) (HyperExpMoments(p(1, 1:2), p(1,3)) ./ [firstMoment, secondMoment, thirdMoment] - 1);
+
+    var = [lambda(1,1), lambda(1,2), prob];
+
+    resultsOfHerEM = fsolve(FunctionHerEM, var)
+
+    HyperExpCDF = @(p, t) 1 - 1/(p(1,2)-p(1,1))*(p(1,2)*exp(-p(1,1)*t)-p(1,1)*exp(-p(1,2)*t));
+
+    y2HEM= HyperExpCDF(resultsOfHerEM, t);
+
+
+%}
 
 
 %Exponential with Maximhood likelihood
 ExpPDF = @(x, l) (l * exp(-l * x));
 
-yExpML = mle(tableSelected, 'pdf', ExpPDF, 'Start', 0.5);
+yExpML = mle(tableSelected, 'pdf', ExpPDF, 'Start', 1/firstMoment);
 
-%plot(tableSelectedSorted, (1:N)/N, ".b", t, yExpML, ".k")
-%legend('Data', 'Exponential distribution')
+yExpMLEGraph = 1 - exp(yExpML * t);
+
+plot(tableSelectedSorted, (1:N)/N, ".b", t, yExpMLEGraph, ".k")
+legend('Data', 'Exponential distribution')
 
 
 %Hypo-exponential with Maximhood likelihood
 HypExpPDF = @(x, l1, l2) (l1 * l2 / (l1 - l2) * (exp(-x * l2) - exp(-x * l1)));
 
 yHypExpML = mle(tableSelected, 'pdf', HypExpPDF, 'Start', [1/(0.3 * firstMoment), 1/(0.7 * firstMoment)]);
-%result = mle(tableSelected, 'pdf', HypExpPDF, 'Start', [1,10], 'LowerBound', [0.000001, 0.000001]);
 
 %plot(tableSelectedSorted, (1:N)/N, ".b", t, yExpML, ".k", t, yHypExpML, ".g")
 %legend('Data', 'Exponential distribution', 'Hypo-exponential distribution')
