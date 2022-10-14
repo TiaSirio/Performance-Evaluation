@@ -6,9 +6,9 @@ table = readtable(filename);
 
 table.Properties.VariableNames = ["operator1", "operator2", "operator3"];
 
-%tableSelected = table.operator1;
+tableSelected = table.operator1;
 %tableSelected = table.operator2;
-tableSelected = table.operator3;
+%tableSelected = table.operator3;
 
 tableSelectedSorted = sortrows(tableSelected);
 

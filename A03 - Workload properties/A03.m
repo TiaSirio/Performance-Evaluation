@@ -90,7 +90,7 @@ if (round(percentile50Check,3) ~= round(percentile50,3))
 end
 
 percentile75Check = prctile(table2array(tableSorted), 75);
-if (round(percentile75Check,3) ~= round(percentile75,3))
+if (round(percentile75Check,2) ~= round(percentile75,2))
     error("Percentile75 not corrispondent!")
 end
 
