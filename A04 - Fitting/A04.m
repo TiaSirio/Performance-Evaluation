@@ -6,9 +6,9 @@ table = readtable(filename);
 
 table.Properties.VariableNames = ["operator1", "operator2", "operator3"];
 
-tableSelected = table.operator1;
+%tableSelected = table.operator1;
 %tableSelected = table.operator2;
-%tableSelected = table.operator3;
+tableSelected = table.operator3;
 
 tableSelectedSorted = sortrows(tableSelected);
 
@@ -68,11 +68,10 @@ if coefficientOfVariation < 1
 
     yHypoExp = HypoExpCDF(resultOfHypoExpM, t);
 
-    %plot(tableSelectedSorted, (1:N)/N, ".b", t, yExp, ".k", t, yUnif, ".r", t, yHypoExp, ".y")
-    %legend('Data', 'Exponential distribution', 'Uniform distribution', 'Hypo-exponential distribution')
-    
-    %plot(tableSelectedSorted, (1:N)/N, "+b", t, yExp, "-c", t, yUnif, ".r", t, yHypoExp, "xy")
-    %plot(tableSelectedSorted, (1:N)/N, t, yExp, t, yUnif, t, yHypExp)
+    figure
+    plot(tableSelectedSorted, (1:N)/N, ".b", t, yExp, ".k", t, yUnif, ".r", t, yHypoExp, ".y")
+    legend('Data', 'Exponential distribution', 'Uniform distribution', 'Hypo-exponential distribution')
+    title("Method of Moments")
 end
 
 %Hyper-exponential distribution - Method of Moments
@@ -91,8 +90,10 @@ if coefficientOfVariation > 1
     HyperExpCDF = @(p, t) 1 - p(1,3) * exp(-p(1,1) * t) - (1 - p(1,3)) * exp(-p(1,2) * t);
     y2HyperExpM = HyperExpCDF(resultsOfHyperExpM, t);
 
-    %plot(tableSelectedSorted, (1:N)/N, ".b", t, yExp, ".k", t, yUnif, ".r", t, y2HyperExpM, ".y")
-    %legend('Data', 'Exponential distribution', 'Uniform distribution', 'Hyper-exponential distribution')
+    figure
+    plot(tableSelectedSorted, (1:N)/N, ".b", t, yExp, ".k", t, yUnif, ".r", t, y2HyperExpM, ".y")
+    legend('Data', 'Exponential distribution', 'Uniform distribution', 'Hyper-exponential distribution')
+    title("Method of Moments")
 end
 
 
@@ -116,8 +117,10 @@ if coefficientOfVariation < 1
 
     yHypoExpMMLEGraph = HypoExpCDF(yHypoExpMLE, t);
 
-    %plot(tableSelectedSorted, (1:N)/N, ".b", t, yExpMLEGraph, ".k", t, yHypoExpMMLEGraph, ".g")
-    %legend('Data', 'Exponential distribution', 'Hypo-exponential distribution')
+    figure
+    plot(tableSelectedSorted, (1:N)/N, ".b", t, yExpMLEGraph, ".k", t, yHypoExpMMLEGraph, ".g")
+    legend('Data', 'Exponential distribution', 'Hypo-exponential distribution')
+    title("Maximhood likelihood")
 end
 
 
@@ -129,6 +132,52 @@ if coefficientOfVariation > 1
 
     yHyperExpMLEGraph = HyperExpCDF(yHyperExpMLE, t);
 
-    %plot(tableSelectedSorted, (1:N)/N, ".b", t, yExpMLEGraph, ".k", t, yHyperExpMLEGraph, ".m")
-    %legend('Data', 'Exponential distribution', 'Hyper-exponential distribution')
+    figure
+    plot(tableSelectedSorted, (1:N)/N, ".b", t, yExpMLEGraph, ".k", t, yHyperExpMLEGraph, ".m")
+    legend('Data', 'Exponential distribution', 'Hyper-exponential distribution')
+    title("Maximhood likelihood")
+end
+
+
+
+fprintf(1, "First moment:")
+firstMoment
+fprintf(1, "Second moment:")
+secondMoment
+fprintf(1, "Third moment:")
+thirdMoment
+fprintf(1, "Uniform left bound a - MOM:")
+a_unif
+fprintf(1, "Uniform right bound b - MOM:")
+b_unif
+fprintf(1, "Exponential rate lambda - MOM:")
+lambda_exp
+if coefficientOfVariation > 1
+    fprintf(1, "Hyper-Exp L1 - MOM:")
+    resultsOfHyperExpM(1,1)
+    fprintf(1, "Hyper-Exp L2 - MOM:")
+    resultsOfHyperExpM(1,2)
+    fprintf(1, "Hyper-Exp P1 - MOM:")
+    resultsOfHyperExpM(1,3)
+elseif coefficientOfVariation < 1
+    fprintf(1, "Hypo-Exp L1 - MOM:")
+    resultOfHypoExpM(1,1)
+    fprintf(1, "Hypo-Exp L2 - MOM:")
+    resultOfHypoExpM(1,2)
+end
+
+fprintf(1, "Exponential rate lambda - MLE:")
+yExpML
+if coefficientOfVariation > 1
+    fprintf(1, "Hyper-Exp L1 - MLE:")
+    yHyperExpMLE(1,1)
+    fprintf(1, "Hyper-Exp L2 - MLE:")
+    yHyperExpMLE(1,2)
+    fprintf(1, "Hyper-Exp P1 - MLE:")
+    yHyperExpMLE(1,3)
+elseif coefficientOfVariation < 1
+    fprintf(1, "Hypo-Exp L1 - MLE:")
+    yHypoExpMLE(1,1)
+    fprintf(1, "Hypo-Exp L2 - MLE:")
+    yHypoExpMLE(1,2)
 end

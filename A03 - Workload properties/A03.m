@@ -5,10 +5,10 @@ filename2 = "Data2.txt";
 filename3 = "Data3.txt";
 filename4 = "Data4.txt";
 
-%log = readtable(filename);
+log = readtable(filename);
 %log = readtable(filename2);
 %log = readtable(filename3);
-log = readtable(filename4);
+%log = readtable(filename4);
 
 table = log(:,1);
 
