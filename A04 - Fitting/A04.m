@@ -6,9 +6,9 @@ table = readtable(filename);
 
 table.Properties.VariableNames = ["operator1", "operator2", "operator3"];
 
-tableSelected = table.operator1;
+%tableSelected = table.operator1;
 %tableSelected = table.operator2;
-%tableSelected = table.operator3;
+tableSelected = table.operator3;
 
 tableSelectedSorted = sortrows(tableSelected);
 
@@ -57,7 +57,7 @@ yUnif = max(0, min(1, (t - a_unif) / (b_unif - a_unif)));
 if coefficientOfVariation < 1
     pars = [1/(0.3 * firstMoment), 1/(0.7 * firstMoment)];
 
-    HypoExpMoments = @(p) [(1/p(1,1) + 1/p(1,2)), 2 * (1/p(1,1)^2 + 1/(p(1,1) * p(1,2) + 1/p(1,2)^2))];
+    HypoExpMoments = @(p) [(1/p(1,1) + 1/p(1,2)), 2 * (1/p(1,1)^2 + 1/(p(1,1) * p(1,2)) + 1/p(1,2)^2)];
 
     FunctionHypoExpM = @(p) (HypoExpMoments(p) ./ [firstMoment, secondMoment] - 1);
 
@@ -76,10 +76,10 @@ end
 
 %Hyper-exponential distribution - Method of Moments
 if coefficientOfVariation > 1
-    lam = [1/(0.8 * firstMoment), 1/(1.2 * firstMoment)];
+    lam = [(0.8 / firstMoment), (1.2 / firstMoment)];
     prob = 0.4;
 
-    HyperExpMoments = @(p, t) [t/p(1,1) + (1-t)/p(1,2), 2 * (t/(p(1,1)^2) + (1-t)/(p(1,2)^2)), 6 * (t/(p(1,1)^3) + ((1-t)/(p(1,2)^2)))];
+    HyperExpMoments = @(p, t) [t/p(1,1) + (1-t)/p(1,2), 2 * (t/(p(1,1)^2) + (1-t)/(p(1,2)^2)), 6 * (t/(p(1,1)^3) + ((1-t)/(p(1,2)^3)))];
     FunctionHyperEM = @(p) (HyperExpMoments(p(1, 1:2), p(1,3)) ./ [firstMoment, secondMoment, thirdMoment] - 1);
     
     var = [lam(1,1), lam(1,2), prob];

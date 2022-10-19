@@ -10,24 +10,113 @@ N = size(table, 1);
 
 sizeCDF = 500;
 
+%Continuous
+
 aUnif = 5;
 bUnif = 15;
 
-C = cumsum(table.discrete);
+resContinuous = zeros(sizeCDF, 1);
 
-%{
-r = rand();
+for i = 1:sizeCDF
+    resContinuous(i) = aUnif + table.discrete(i) * (bUnif - aUnif);
+end
+
+%figure
+%plot(sort(resContinuous), (1:N)/N, ".b")
+
+
+
+% Discrete
+
+probDiscrete = [0.3, 0.4, 0.3];
+valueDiscrete = [5, 10, 15];
+
+
+continuousDiscrete = cumsum(probDiscrete);
+
+resDiscrete = zeros(sizeCDF, 1);
+
 for k = 1:sizeCDF
-    for i = 1:N
-        if r < C(i)
-            res(k) = i;
+    if table.discrete(k) < continuousDiscrete(1,1)
+        resDiscrete(k) = valueDiscrete(1,1);
+    elseif table.discrete(k) < continuousDiscrete(1,2)
+        resDiscrete(k) = valueDiscrete(1,2);
+    else
+        resDiscrete(k) = valueDiscrete(1,3);
+    end
+end
+
+%figure
+%plot(sort(resDiscrete), (1:N)/N, ".b")
+
+
+
+% Exponential
+meanDiscrete = 10;
+lambda = 1/meanDiscrete;
+
+resExp = -log(table.discrete) / lambda;
+
+%figure
+%plot(sort(resExp), (1:N)/N, "b");
+
+%plot(sort(resExp), (1:N)/N, ".b", (0:3), 1 - exp(-lambda * (0:3)), "-r");
+
+
+% Hyper-exponential
+lambdaHyper = [0.05, 0.175];
+probHyper = [0.3, 0.7];
+
+resHyper = zeros(sizeCDF, 1);
+
+for k = 1:sizeCDF
+    if table.discrete(k) < probHyper(1,1)
+        resHyper(k) = -log(table.discrete(k)) / lambdaHyper(1,1);
+    else
+        resHyper(k) = -log(table.continuous1(k)) / lambdaHyper(1,2);
+    end
+end
+
+
+%figure
+%plot(sort(resHyper), (1:N)/N, ".b");
+
+
+
+% Hypo-exponential
+lambdaHypo = [0.25, 0.16667];
+
+resHypo = -log(table.discrete) / lambdaHypo(1,1) -log(table.continuous1) / lambdaHypo(1,2);
+
+%figure
+%plot(sort(resHypo), (1:N)/N, ".b");
+
+
+
+% Hyper-Erlang
+
+numberOfStage = [1, 2];
+rateHyperErlang = [0.05, 0.35];
+probHyperErlang = [0.3, 0.7];
+
+cumSumErlang = cumsum(probHyperErlang);
+
+resHyperErl = zeros(sizeCDF, 1);
+
+for k = 1:sizeCDF
+    for i = 1:2
+        if table.discrete(k) < probHyperErlang(1,i)
+            resHyperErl(k) = 0;
+            for l = 1:numberOfStage(1, i)
+                if l == 1
+                    resHyperErl(k) = resHyperErl(k) -log(table.continuous1(k)) / rateHyperErlang(1,i);
+                else
+                    resHyperErl(k) = resHyperErl(k) -log(table.continuous2(k)) / rateHyperErlang(1,i);
+                end
+            end
         end
     end
 end
-%}
 
-for i = 1:sizeCDF
-    res(i) = aUnif + floor(table.discrete(i) * (bUnif - aUnif + 1));
-end
-
-res
+%figure
+%plot(sort(resHyperErl), (1:N)/N, ".b");
