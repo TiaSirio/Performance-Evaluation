@@ -10,7 +10,7 @@ N = size(table, 1);
 
 sizeCDF = 500;
 
-%Continuous
+%% Continuous
 
 aUnif = 5;
 bUnif = 15;
@@ -26,7 +26,7 @@ end
 
 
 
-% Discrete
+%% Discrete
 
 probDiscrete = [0.3, 0.4, 0.3];
 valueDiscrete = [5, 10, 15];
@@ -55,7 +55,7 @@ end
 meanDiscrete = 10;
 lambda = 1/meanDiscrete;
 
-resExp = -log(table.discrete) / lambda;
+resExp = -log(table.continuous1) / lambda;
 
 %figure
 %plot(sort(resExp), (1:N)/N, "b");
@@ -63,7 +63,7 @@ resExp = -log(table.discrete) / lambda;
 %plot(sort(resExp), (1:N)/N, ".b", (0:3), 1 - exp(-lambda * (0:3)), "-r");
 
 
-% Hyper-exponential
+%% Hyper-exponential
 lambdaHyper = [0.05, 0.175];
 probHyper = [0.3, 0.7];
 
@@ -71,7 +71,7 @@ resHyper = zeros(sizeCDF, 1);
 
 for k = 1:sizeCDF
     if table.discrete(k) < probHyper(1,1)
-        resHyper(k) = -log(table.discrete(k)) / lambdaHyper(1,1);
+        resHyper(k) = -log(table.continuous1(k)) / lambdaHyper(1,1);
     else
         resHyper(k) = -log(table.continuous1(k)) / lambdaHyper(1,2);
     end
@@ -83,17 +83,17 @@ end
 
 
 
-% Hypo-exponential
+%% Hypo-exponential
 lambdaHypo = [0.25, 0.16667];
 
-resHypo = -log(table.discrete) / lambdaHypo(1,1) -log(table.continuous1) / lambdaHypo(1,2);
+resHypo = -log(table.continuous1) / lambdaHypo(1,1) -log(table.continuous2) / lambdaHypo(1,2);
 
 %figure
 %plot(sort(resHypo), (1:N)/N, ".b");
 
 
 
-% Hyper-Erlang
+%% Hyper-Erlang
 
 numberOfStage = [1, 2];
 rateHyperErlang = [0.05, 0.35];
