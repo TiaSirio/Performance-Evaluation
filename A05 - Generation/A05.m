@@ -98,10 +98,10 @@ resHypo = -log(table.continuous1) / lambdaHypo(1,1) -log(table.continuous2) / la
 
 rangeHypoExp = 0:50;
 
-CDFanal = 1 - (lambda2 * (exp(-lambda1 * rangeHypoExp)) - lambda1 * exp(-lambda2 * rangeHypoExp)) / (lambda2 - lambda1);
+CDFHypoExpAnalytical = 1 - (lambdaHypo(1,2) * (exp(-lambdaHypo(1,1) * rangeHypoExp)) - lambdaHypo(1,1) * exp(-lambdaHypo(1,2) * rangeHypoExp)) / (lambdaHypo(1,2) - lambdaHypo(1,1));
 
-%figure
-%plot(sort(resHypo), (1:N)/N, ".b");
+figure
+plot(sort(resHypo), (1:N)/N, ".b", rangeHypoExp, CDFHypoExpAnalytical, "-r");
 
 
 %% Hyper-Erlang
@@ -109,11 +109,13 @@ CDFanal = 1 - (lambda2 * (exp(-lambda1 * rangeHypoExp)) - lambda1 * exp(-lambda2
 numberOfStage = [1, 2];
 rateHyperErlang = [0.05, 0.35];
 probHyperErlang = [0.3, 0.7];
-
 cumSumErlang = cumsum(probHyperErlang);
+
+rangeHyperErlang = (0:80);
 
 resHyperErl = zeros(sizeCDF, 1);
 
+%{
 for k = 1:sizeCDF
     for i = 1:2
         if table.discrete(k) < probHyperErlang(1,i)
@@ -128,6 +130,17 @@ for k = 1:sizeCDF
         end
     end
 end
+%}
 
-%figure
-%plot(sort(resHyperErl), (1:N)/N, ".b");
+for k = 1:sizeCDF
+   if table.discrete(k) < probHyperErlang(1,1)
+       resHyperErl(k) = - log(table.continuous1(k)) / rateHyperErlang(1,1);
+   else
+       resHyperErl(k) = - log(table.continuous1(k) * table.continuous2(k)) / rateHyperErlang(1,2);
+   end
+end
+
+CDFHyperErlang = @(x) 1 - probHyperErlang(1,1) .* exp(-rateHyperErlang(1,1) * x) - (1 - probHyperErlang(1,1)) .* (exp(-rateHyperErlang(1,2) * x) + rateHyperErlang(1,2) * x .* exp(-rateHyperErlang(1,2) * x));
+
+figure
+plot(sort(resHyperErl), (1:N)/N, ".b", rangeHyperErlang, CDFHyperErlang(rangeHyperErlang));
