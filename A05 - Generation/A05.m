@@ -21,8 +21,11 @@ for i = 1:sizeCDF
     resContinuous(i) = aUnif + table.discrete(i) * (bUnif - aUnif);
 end
 
-%figure
-%plot(sort(resContinuous), (1:N)/N, ".b")
+range = aUnif:.001:bUnif;
+CDFanalyticalUniform = cdf(makedist('Uniform','lower',aUnif,'upper',bUnif),range);
+
+figure
+plot(sort(resContinuous), (1:N)/N, ".b", range, CDFanalyticalUniform, "-r")
 
 
 
@@ -51,23 +54,25 @@ end
 
 
 
-% Exponential
+%% Exponential
 meanDiscrete = 10;
 lambda = 1/meanDiscrete;
 
 resExp = -log(table.continuous1) / lambda;
 
-%figure
-%plot(sort(resExp), (1:N)/N, "b");
+rangeExp = 0:80;
+CDFanalyticalExponential = 1 - exp(-lambda * rangeExp);
 
-%plot(sort(resExp), (1:N)/N, ".b", (0:3), 1 - exp(-lambda * (0:3)), "-r");
-
+figure
+plot(sort(resExp), (1:N)/N, "b", rangeExp, CDFanalyticalExponential, "-r");
 
 %% Hyper-exponential
 lambdaHyper = [0.05, 0.175];
 probHyper = [0.3, 0.7];
 
 resHyper = zeros(sizeCDF, 1);
+
+rangeHyperExp = 0:80;
 
 for k = 1:sizeCDF
     if table.discrete(k) < probHyper(1,1)
@@ -77,9 +82,12 @@ for k = 1:sizeCDF
     end
 end
 
+hyperExpAnalitycalFunc = @(p,t) (1 - (p(1,3) * exp(-p(1,1) * t)) - ((1 - p(1,3)) * exp(-p(1,2) * t)));
 
-%figure
-%plot(sort(resHyper), (1:N)/N, ".b");
+CDFHyperExpAnalytical = hyperExpAnalitycalFunc([lambdaHyper(1,1), lambdaHyper(1,2), probHyper(1,1)], rangeHyperExp);
+
+figure
+plot(sort(resHyper), (1:N)/N, ".b", rangeHyperExp, CDFHyperExpAnalytical, "-r");
 
 
 
@@ -88,9 +96,12 @@ lambdaHypo = [0.25, 0.16667];
 
 resHypo = -log(table.continuous1) / lambdaHypo(1,1) -log(table.continuous2) / lambdaHypo(1,2);
 
+rangeHypoExp = 0:50;
+
+CDFanal = 1 - (lambda2 * (exp(-lambda1 * rangeHypoExp)) - lambda1 * exp(-lambda2 * rangeHypoExp)) / (lambda2 - lambda1);
+
 %figure
 %plot(sort(resHypo), (1:N)/N, ".b");
-
 
 
 %% Hyper-Erlang
