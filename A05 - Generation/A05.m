@@ -20,7 +20,7 @@ for i = 1:sizeCDF
 end
 
 range = aUnif:.001:bUnif;
-CDFanalyticalUniform = cdf(makedist('Uniform','lower',aUnif,'upper',bUnif),range);
+CDFanalyticalUniform = cdf(makedist('Uniform','lower',aUnif,'upper',bUnif), range);
 
 figure
 plot(sort(resContinuous), (1:sizeCDF)/sizeCDF, "-b", range, CDFanalyticalUniform, "-r")
