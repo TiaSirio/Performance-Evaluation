@@ -25,7 +25,7 @@ range = aUnif:.001:bUnif;
 CDFanalyticalUniform = cdf(makedist('Uniform','lower',aUnif,'upper',bUnif),range);
 
 figure
-plot(sort(resContinuous), (1:N)/N, ".b", range, CDFanalyticalUniform, "-r")
+plot(sort(resContinuous), (1:N)/N, "-b", range, CDFanalyticalUniform, "-r")
 
 
 
@@ -37,20 +37,43 @@ valueDiscrete = [5, 10, 15];
 
 continuousDiscrete = cumsum(probDiscrete);
 
-resDiscrete = zeros(sizeCDF, 1);
+resDiscreteOccurrencies = zeros(1, 3);
 
 for k = 1:sizeCDF
     if table.discrete(k) < continuousDiscrete(1,1)
-        resDiscrete(k) = valueDiscrete(1,1);
+        resDiscreteOccurrencies(1) = resDiscreteOccurrencies(1) + 1;
     elseif table.discrete(k) < continuousDiscrete(1,2)
-        resDiscrete(k) = valueDiscrete(1,2);
+        resDiscreteOccurrencies(2) = resDiscreteOccurrencies(2) + 1;
     else
-        resDiscrete(k) = valueDiscrete(1,3);
+        resDiscreteOccurrencies(3) = resDiscreteOccurrencies(3) + 1;
     end
 end
 
-%figure
-%plot(sort(resDiscrete), (1:N)/N, ".b")
+
+resDiscrete = zeros(1, sizeCDF);
+CDFDiscreteAnalytical = zeros(1, sizeCDF);
+
+valueXAxe = zeros(1, sizeCDF);
+for i = 1:sizeCDF
+    valueXAxe(i) = i / 20;
+    if valueXAxe(i) < 5
+       resDiscrete(i) = 0;
+       CDFDiscreteAnalytical(i) = 0;
+    elseif valueXAxe(i) < 10
+       resDiscrete(i) = resDiscreteOccurrencies(1) / sizeCDF;
+       CDFDiscreteAnalytical(i) = 0.3;
+    elseif valueXAxe(i) < 15
+        resDiscrete(i) = (resDiscreteOccurrencies(2) + resDiscreteOccurrencies(1)) / sizeCDF;
+        CDFDiscreteAnalytical(i) = 0.3 + 0.4;
+    else
+        resDiscrete(i) = 1;
+        CDFDiscreteAnalytical(i) = 1;
+    end
+end
+
+
+figure
+plot(valueXAxe, sort(resDiscrete), "-b", valueXAxe ,sort(CDFDiscreteAnalytical), "-r")
 
 
 
@@ -64,7 +87,7 @@ rangeExp = 0:80;
 CDFanalyticalExponential = 1 - exp(-lambda * rangeExp);
 
 figure
-plot(sort(resExp), (1:N)/N, "b", rangeExp, CDFanalyticalExponential, "-r");
+plot(sort(resExp), (1:N)/N, "-b", rangeExp, CDFanalyticalExponential, "-r");
 
 %% Hyper-exponential
 lambdaHyper = [0.05, 0.175];
@@ -87,7 +110,7 @@ hyperExpAnalitycalFunc = @(p,t) (1 - (p(1,3) * exp(-p(1,1) * t)) - ((1 - p(1,3))
 CDFHyperExpAnalytical = hyperExpAnalitycalFunc([lambdaHyper(1,1), lambdaHyper(1,2), probHyper(1,1)], rangeHyperExp);
 
 figure
-plot(sort(resHyper), (1:N)/N, ".b", rangeHyperExp, CDFHyperExpAnalytical, "-r");
+plot(sort(resHyper), (1:N)/N, "-b", rangeHyperExp, CDFHyperExpAnalytical, "-r");
 
 
 
@@ -101,12 +124,11 @@ rangeHypoExp = 0:50;
 CDFHypoExpAnalytical = 1 - (lambdaHypo(1,2) * (exp(-lambdaHypo(1,1) * rangeHypoExp)) - lambdaHypo(1,1) * exp(-lambdaHypo(1,2) * rangeHypoExp)) / (lambdaHypo(1,2) - lambdaHypo(1,1));
 
 figure
-plot(sort(resHypo), (1:N)/N, ".b", rangeHypoExp, CDFHypoExpAnalytical, "-r");
+plot(sort(resHypo), (1:N)/N, "-b", rangeHypoExp, CDFHypoExpAnalytical, "-r");
 
 
 %% Hyper-Erlang
 
-numberOfStage = [1, 2];
 rateHyperErlang = [0.05, 0.35];
 probHyperErlang = [0.3, 0.7];
 cumSumErlang = cumsum(probHyperErlang);
@@ -115,32 +137,27 @@ rangeHyperErlang = (0:80);
 
 resHyperErl = zeros(sizeCDF, 1);
 
-%{
 for k = 1:sizeCDF
-    for i = 1:2
-        if table.discrete(k) < probHyperErlang(1,i)
-            resHyperErl(k) = 0;
-            for l = 1:numberOfStage(1, i)
-                if l == 1
-                    resHyperErl(k) = resHyperErl(k) -log(table.continuous1(k)) / rateHyperErlang(1,i);
-                else
-                    resHyperErl(k) = resHyperErl(k) -log(table.continuous2(k)) / rateHyperErlang(1,i);
-                end
-            end
-        end
-    end
-end
-%}
-
-for k = 1:sizeCDF
+   resHyperErl(k) = 0;
    if table.discrete(k) < probHyperErlang(1,1)
-       resHyperErl(k) = - log(table.continuous1(k)) / rateHyperErlang(1,1);
+       resHyperErl(k) = -log(table.continuous1(k)) / rateHyperErlang(1,1);
    else
-       resHyperErl(k) = - log(table.continuous1(k) * table.continuous2(k)) / rateHyperErlang(1,2);
+     for stage = 1:2
+        if stage == 1
+            resHyperErl(k) = resHyperErl(k) - log(table.continuous1(k)) / rateHyperErlang(1,2);
+        else
+            resHyperErl(k) = resHyperErl(k) - log(table.continuous2(k)) / rateHyperErlang(1,2);
+        end
+     end
    end
 end
+
+resHyperErl2 = (table.discrete < probHyperErlang(1,1)) .* (-log(table.continuous1) / rateHyperErlang(1,1)) + (table.discrete >= probHyperErlang(1,1)) .* (-log(table.continuous1 .* table.continuous2) / rateHyperErlang(1,2));
 
 CDFHyperErlang = @(x) 1 - probHyperErlang(1,1) .* exp(-rateHyperErlang(1,1) * x) - (1 - probHyperErlang(1,1)) .* (exp(-rateHyperErlang(1,2) * x) + rateHyperErlang(1,2) * x .* exp(-rateHyperErlang(1,2) * x));
 
 figure
-plot(sort(resHyperErl), (1:N)/N, ".b", rangeHyperErlang, CDFHyperErlang(rangeHyperErlang));
+hold on
+plot(sort(resHyperErl), (1:N)/N, ".b", "MarkerSize", 5);
+plot(rangeHyperErlang, CDFHyperErlang(rangeHyperErlang), "-r");
+plot(sort(resHyperErl2), (1:N)/N, ".y", "MarkerSize", 1);
