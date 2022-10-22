@@ -1,38 +1,64 @@
+clc, clear
+
 lambdaHyperExp = [0.02, 0.2];
 probHyperExp = 0.1;
 
 N = 50000;
-k = 200;
-m = 250;
 
-arrivals = zeros(N, 1);
+interArrivals = zeros(N, 1);
 
 for k = 1:N
     randValue = rand();
     if randValue < probHyperExp(1,1)
-        arrivals(k) = -log(rand()) / lambdaHyperExp(1,1);
+        interArrivals(k) = -log(rand()) / lambdaHyperExp(1,1);
     else
-        arrivals(k) = -log(rand()) / lambdaHyperExp(1,2);
+        interArrivals(k) = -log(rand()) / lambdaHyperExp(1,2);
     end
 end
 
 %figure
-%plot(sort(arrivals), (1:N)/N, ".b");
+%plot(sort(interArrivals), (1:N)/N, ".b");
 
 
 aUnif = 5;
 bUnif = 10;
 
-services = zeros(N, 1);
+serviceTime = zeros(N, 1);
 
 for i = 1:N
-    services(i) = aUnif + rand() * (bUnif - aUnif);
+    serviceTime(i) = aUnif + rand() * (bUnif - aUnif);
 end
 
 %figure
-%plot(sort(services), (1:N)/N, ".b");
+%plot(sort(serviceTime), (1:N)/N, ".b");
+
+arrivalTime = zeros(N + 1, 1);
+
+for i = 2:N + 1
+    arrivalTime(i) = arrivalTime(i - 1) + interArrivals(i - 1);
+end
+
+servedTime = zeros(N, 1);
+servedTime(1) = arrivalTime(1);
+
+for i = 2 : size(table)
+    servedTime(i) = max(servedTime(i - 1) + serviceTime(i - 1), arrivalTime(i));
+end
+
+completionTime = servedTime + serviceTime;
+
+responseTime = zeros(N,1);
+responseTime(1) = serviceTime(1);
+
+for i = 2:N
+    responseTime(i) = completionTime(i) - arrivalTime(i);
+end
+
+
 
 dGamma = 1.96;
+k = 200;
+m = 250;
 
 %averageService = sum(services) / N;
 

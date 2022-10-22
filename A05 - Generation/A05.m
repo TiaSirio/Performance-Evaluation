@@ -13,17 +13,19 @@ sizeCDF = 500;
 aUnif = 5;
 bUnif = 15;
 
-resContinuous = zeros(sizeCDF, 1);
+resContinuousValue = zeros(sizeCDF + 1, 1);
 
 for i = 1:sizeCDF
-    resContinuous(i) = aUnif + table.discrete(i) * (bUnif - aUnif);
+    resContinuousValue(i + 1) = aUnif + table.continuous1(i) * (bUnif - aUnif);
 end
 
+resContinuous = cumsum(resContinuousValue/sum(resContinuousValue));
 range = aUnif:.001:bUnif;
+range2 = aUnif:.02:bUnif;
 CDFanalyticalUniform = cdf(makedist('Uniform','lower',aUnif,'upper',bUnif), range);
 
 figure
-plot(sort(resContinuous), (1:sizeCDF)/sizeCDF, "-b", range, CDFanalyticalUniform, "-r")
+plot(range2, sort(resContinuous), ".b", range, CDFanalyticalUniform, "-r")
 
 
 
@@ -31,7 +33,7 @@ plot(sort(resContinuous), (1:sizeCDF)/sizeCDF, "-b", range, CDFanalyticalUniform
 
 probDiscrete = [0.3, 0.4, 0.3];
 valueDiscrete = [5, 10, 15];
-
+valuesTaken = zeros(sizeCDF, 1);
 
 continuousDiscrete = cumsum(probDiscrete);
 
@@ -39,10 +41,13 @@ resDiscreteOccurrencies = zeros(1, 3);
 
 for k = 1:sizeCDF
     if table.discrete(k) < continuousDiscrete(1,1)
+        valuesTaken(k) = 5;
         resDiscreteOccurrencies(1) = resDiscreteOccurrencies(1) + 1;
     elseif table.discrete(k) < continuousDiscrete(1,2)
+        valuesTaken(k) = 10;
         resDiscreteOccurrencies(2) = resDiscreteOccurrencies(2) + 1;
     else
+        valuesTaken(k) = 15;
         resDiscreteOccurrencies(3) = resDiscreteOccurrencies(3) + 1;
     end
 end
