@@ -65,3 +65,53 @@ m = 250;
 %xMean = (1 / N) * sum(services);
 
 %sSquared = (1 / (N - 1)) * sum((services - xMean).^2)
+
+
+
+R = zeros(k,1);
+
+B = zeros(k,1);
+T = zeros(k,1);
+U = zeros(k,1);
+W = zeros(k,1);
+Nj = zeros(k,1);
+X = zeros(k,1);
+
+for i = 1:k
+    start = (i - 1) * m + 1;
+    stop = m * i;
+    
+    R(i) = mean(responseTime(start:stop));
+    
+    B(i) = sum(serviceTime(start:stop));
+    T(i) = completionTime(stop) - arrivalTime(start);
+    U(i) = B(i) / T(i);
+    
+    W(i) = sum(responseTime(start:stop));
+    Nj(i) = W(i) / T(i);
+    
+    X(i) = m / T(i);
+end
+
+xOverdueU = mean(U);
+s2U = sum((U - xOverdueU) .^ 2) / (k - 1);
+U = [xU - dGamma * sqrt(s2U / k), xOverdueU + dGamma * sqrt(s2U / k)]
+
+%{
+Metodo 1 (?)
+xR = mean(responseTime)
+s2R = std(responseTime)^2;
+R = [xR - d*sqrt(s2R / N), xR + d*sqrt(s2R / N)]
+%}
+
+xOverdueR = mean(R);
+s2R = sum((R - xOverdueR) .^ 2) / (k - 1);
+R = [xR - dGamma * sqrt(s2R / k), xOverdueR + dGamma * sqrt(s2R / k)]
+
+xOverdueN = mean(Nj);
+s2N = sum((Nj - xOverdueN) .^ 2) / (k - 1);
+Nj = [xN - dGamma * sqrt(s2N / k), xOverdueN + dGamma * sqrt(s2N / k)]
+
+xOverdueX = mean(X);
+s2X = sum((X - xOverdueX) .^ 2) / (k - 1);
+X = [xX - dGamma * sqrt(s2X / k), xOverdueX + dGamma * sqrt(s2X / k)]
