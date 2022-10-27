@@ -32,16 +32,18 @@ end
 %figure
 %plot(sort(serviceTime), (1:N)/N, ".b");
 
-arrivalTime = zeros(N + 1, 1);
+arrivalTime = zeros(N, 1);
 
-for i = 2:N + 1
+
+for i = 2:N
     arrivalTime(i) = arrivalTime(i - 1) + interArrivals(i - 1);
 end
+
 
 servedTime = zeros(N, 1);
 servedTime(1) = arrivalTime(1);
 
-for i = 2 : size(table)
+for i = 2:N - 1
     servedTime(i) = max(servedTime(i - 1) + serviceTime(i - 1), arrivalTime(i));
 end
 
@@ -59,14 +61,6 @@ end
 dGamma = 1.96;
 k = 200;
 m = 250;
-
-%averageService = sum(services) / N;
-
-%xMean = (1 / N) * sum(services);
-
-%sSquared = (1 / (N - 1)) * sum((services - xMean).^2)
-
-
 
 R = zeros(k,1);
 
@@ -95,23 +89,32 @@ end
 
 xOverdueU = mean(U);
 s2U = sum((U - xOverdueU) .^ 2) / (k - 1);
-U = [xU - dGamma * sqrt(s2U / k), xOverdueU + dGamma * sqrt(s2U / k)]
+U = [xOverdueU - dGamma * sqrt(s2U / k), xOverdueU + dGamma * sqrt(s2U / k)]
+
+%U = confidenceIntervals(U, k, dGamma)
+
+xOverdueR = mean(responseTime);
+s2R = std(responseTime)^2;
+R = [xOverdueR - dGamma * sqrt(s2R / N), xOverdueR + dGamma * sqrt(s2R / N)]
 
 %{
-Metodo 1 (?)
-xR = mean(responseTime)
-s2R = std(responseTime)^2;
-R = [xR - d*sqrt(s2R / N), xR + d*sqrt(s2R / N)]
-%}
-
 xOverdueR = mean(R);
 s2R = sum((R - xOverdueR) .^ 2) / (k - 1);
-R = [xR - dGamma * sqrt(s2R / k), xOverdueR + dGamma * sqrt(s2R / k)]
+R = [xOverdueR - dGamma * sqrt(s2R / k), xOverdueR + dGamma * sqrt(s2R / k)]
+%}
 
 xOverdueN = mean(Nj);
 s2N = sum((Nj - xOverdueN) .^ 2) / (k - 1);
-Nj = [xN - dGamma * sqrt(s2N / k), xOverdueN + dGamma * sqrt(s2N / k)]
+Nj = [xOverdueN - dGamma * sqrt(s2N / k), xOverdueN + dGamma * sqrt(s2N / k)]
 
 xOverdueX = mean(X);
 s2X = sum((X - xOverdueX) .^ 2) / (k - 1);
-X = [xX - dGamma * sqrt(s2X / k), xOverdueX + dGamma * sqrt(s2X / k)]
+X = [xOverdueX - dGamma * sqrt(s2X / k), xOverdueX + dGamma * sqrt(s2X / k)]
+
+
+
+function [lowerBound, upperBound] = confidenceIntervals(valueConfidence, k, dGamma)
+    xOverdue = mean(valueConfidence);
+    s2 = sum((valueConfidence - xOverdue) .^ 2) / (k - 1);
+    [lowerBound, upperBound] = [xOverdueN - dGamma * sqrt(s2N / k), xOverdueN + dGamma * sqrt(s2N / k)];
+end
