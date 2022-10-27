@@ -12,13 +12,13 @@ cumSumWorkingSystem = cumsum(pWorkingSystem);
 lambdaHeatPump = 0.03;
 lambdaAirConditioning = 0.05;
 
-state = 1;
+state = 0;
 time = 0;
 dt = 0;
 nextState = 0;
 
 N = 50000;
-traceStateMachine = zeros(N, 3);
+%traceStateMachine = zeros(N, 3);
 %trace = zeros(N, 3);
 enterTheSensingState = 0;
 timeSensing = 0;
@@ -61,7 +61,7 @@ for i = 1:N
         nextState = 0;
     end
 
-    %trace(i,:) = [time, time + dt, state];
+    %traceStateMachine(i,:) = [time, time + dt, state];
     state = nextState;
     time = time + dt;
 end
