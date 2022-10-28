@@ -6,7 +6,7 @@ kSens = 3;
 aCpu = 10;
 bCpu = 20;
 
-pWorkingSystem = [0.5, 0.3, 0.2];
+pWorkingSystem = [0.5, 0.2, 0.3];
 cumSumWorkingSystem = cumsum(pWorkingSystem);
 
 lambdaHeatPump = 0.03;
@@ -17,15 +17,13 @@ time = 0;
 dt = 0;
 nextState = 0;
 
-N = 50000;
-%traceStateMachine = zeros(N, 3);
-%trace = zeros(N, 3);
 enterTheSensingState = 0;
 timeSensing = 0;
 timeCPU = 0;
 timeAirConditioning = 0;
 timeHeatPump = 0;
 
+N = 50000;
 
 for i = 1:N
     % CPU performing
@@ -36,6 +34,7 @@ for i = 1:N
         end
         nextState = 1;
         timeCPU = timeCPU + dt;
+        enterTheSensingState = enterTheSensingState + 1;
     % Sensing
     elseif state == 1
         dt = aCpu + (bCpu - aCpu) * rand();
@@ -47,7 +46,6 @@ for i = 1:N
         else
             nextState = 3;
         end
-        enterTheSensingState = enterTheSensingState + 1;
         timeSensing = timeSensing + dt;
     % Heat pump on
     elseif state == 2
@@ -60,107 +58,30 @@ for i = 1:N
         timeAirConditioning = timeAirConditioning + dt;
         nextState = 0;
     end
-
-    %traceStateMachine(i,:) = [time, time + dt, state];
     state = nextState;
     time = time + dt;
 end
 
 
-pCPU = timeCPU / time
-pSensing = timeSensing / time
-pHeatPump = timeHeatPump / time
-pAirConditioning = timeAirConditioning / time
-X = enterTheSensingState / time
+pCPU = timeCPU / time;
+pSensing = timeSensing / time;
+pHeatPump = timeHeatPump / time;
+pAirConditioning = timeAirConditioning / time;
+X = enterTheSensingState / time;
 
-
-%{
-%% INTRO
-
-% sens variables initialization
-lambda_sens = 0.1;
-K_sens = 3;
-
-% cpu variables initialization
-a_cpu = 10;
-b_cpu = 20;
-p_cpu = [0.5, 0.3, 0.2];
-C_cpu = cumsum(p_cpu);
-state_poss_cpu = size(C_cpu, 2);
-
-% hp variables initialization
-lambda_hp = 0.03;
-
-% ac variables initialization
-lambda_ac = 0.05;
-
-% FSM variables initialization
-s = 1;
-t = 0;
-
-% Other (possibly?) useful variables initialization
-N = 50000;
-trace = zeros(N, 3);
-
-
-%% DATA GENERATION
-
-for i = 1:N
-    
-    if s == 0        % CPU performing
-        dt = a_cpu + (b_cpu-a_cpu) * rand();
-        r = rand();
-        for ns = 1:state_poss_cpu
-            if r < C_cpu(ns)
-                break
-            end
-        end
-    
-    elseif s == 1    % Sensing
-       dt = 0;
-        for k = 1:K_sens
-            dt = dt - log(rand())/lambda_sens;
-        end
-        ns = 0;
-    
-    elseif s == 2    % Air conditioning on
-        dt = - log (rand()) / lambda_ac;
-        ns = 1;
-
-    elseif s == 3    % Heat pump on
-        dt = - log (rand()) / lambda_hp;
-        ns = 1;
-        
-    end
-    trace(i,:) = [t, t + dt, s];
-    s = ns;
-    t = t + dt;
+probabilityCheck = pCPU + pSensing + pHeatPump + pAirConditioning;
+if (round(probabilityCheck,3) ~= round(1,3))
+    error("Probability not corrispondent!")
 end
 
 
-%% Probabilities of job in a state
-
-sens_times = trace(trace(:,3)==1, 1:2);
-sens_prob = sum(sens_times(:,2)-sens_times(:,1)) / t;
-
-cpu_times = trace(trace(:,3)==0, 1:2);
-cpu_prob = sum(cpu_times(:,2)-cpu_times(:,1)) / t;
-
-hp_times = trace(trace(:,3)==3, 1:2);
-hp_prob = sum(hp_times(:,2)-hp_times(:,1)) / t;
-
-ac_times = trace(trace(:,3)==2, 1:2);
-ac_prob = sum(ac_times(:,2)-ac_times(:,1)) / t;
-
-%% Frequency of the system
-
-sens_freq = size(sens_times,1) / t;
-
-%% PRINTS
-
-fprintf("%f\n", sens_prob);
-fprintf("%f\n", cpu_prob);
-fprintf("%f\n", hp_prob);
-fprintf("%f\n", ac_prob);
-fprintf("%f\n", sens_freq);
-%}
+fprintf(1, "Sensing probability:")
+pCPU
+fprintf(1, "Using CPU probability:")
+pSensing
+fprintf(1, "Turning Heat Pump probability:")
+pHeatPump
+fprintf(1, "Turning Air conditioning probability:")
+pAirConditioning
+fprintf(1, "Sensing frequency:")
+X

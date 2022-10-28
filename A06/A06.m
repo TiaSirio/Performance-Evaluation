@@ -43,7 +43,7 @@ end
 servedTime = zeros(N, 1);
 servedTime(1) = arrivalTime(1);
 
-for i = 2:N - 1
+for i = 2:N
     servedTime(i) = max(servedTime(i - 1) + serviceTime(i - 1), arrivalTime(i));
 end
 
@@ -62,59 +62,48 @@ dGamma = 1.96;
 k = 200;
 m = 250;
 
-R = zeros(k,1);
-
-B = zeros(k,1);
-T = zeros(k,1);
-U = zeros(k,1);
-W = zeros(k,1);
-Nj = zeros(k,1);
-X = zeros(k,1);
+BusyTime = zeros(k,1);
+Time = zeros(k,1);
+Utilization = zeros(k,1);
+Workload = zeros(k,1);
+NumberOfJob = zeros(k,1);
+Throughput = zeros(k,1);
 
 for i = 1:k
     start = (i - 1) * m + 1;
     stop = m * i;
+        
+    BusyTime(i) = sum(serviceTime(start:stop));
+    Time(i) = completionTime(stop) - arrivalTime(start);
+    Utilization(i) = BusyTime(i) / Time(i);
     
-    R(i) = mean(responseTime(start:stop));
+    Workload(i) = sum(responseTime(start:stop));
+    NumberOfJob(i) = Workload(i) / Time(i);
     
-    B(i) = sum(serviceTime(start:stop));
-    T(i) = completionTime(stop) - arrivalTime(start);
-    U(i) = B(i) / T(i);
-    
-    W(i) = sum(responseTime(start:stop));
-    Nj(i) = W(i) / T(i);
-    
-    X(i) = m / T(i);
+    Throughput(i) = m / Time(i);
 end
-
-xOverdueU = mean(U);
-s2U = sum((U - xOverdueU) .^ 2) / (k - 1);
-U = [xOverdueU - dGamma * sqrt(s2U / k), xOverdueU + dGamma * sqrt(s2U / k)]
-
-%U = confidenceIntervals(U, k, dGamma)
 
 xOverdueR = mean(responseTime);
 s2R = std(responseTime)^2;
-R = [xOverdueR - dGamma * sqrt(s2R / N), xOverdueR + dGamma * sqrt(s2R / N)]
+ResponseTime = [xOverdueR - dGamma * sqrt(s2R / N), xOverdueR + dGamma * sqrt(s2R / N)];
 
-%{
-xOverdueR = mean(R);
-s2R = sum((R - xOverdueR) .^ 2) / (k - 1);
-R = [xOverdueR - dGamma * sqrt(s2R / k), xOverdueR + dGamma * sqrt(s2R / k)]
-%}
+xOverdueN = mean(NumberOfJob);
+s2N = sum((NumberOfJob - xOverdueN) .^ 2) / (k - 1);
+NumberOfJob = [xOverdueN - dGamma * sqrt(s2N / k), xOverdueN + dGamma * sqrt(s2N / k)];
 
-xOverdueN = mean(Nj);
-s2N = sum((Nj - xOverdueN) .^ 2) / (k - 1);
-Nj = [xOverdueN - dGamma * sqrt(s2N / k), xOverdueN + dGamma * sqrt(s2N / k)]
+xOverdueX = mean(Throughput);
+s2X = sum((Throughput - xOverdueX) .^ 2) / (k - 1);
+Throughput = [xOverdueX - dGamma * sqrt(s2X / k), xOverdueX + dGamma * sqrt(s2X / k)];
 
-xOverdueX = mean(X);
-s2X = sum((X - xOverdueX) .^ 2) / (k - 1);
-X = [xOverdueX - dGamma * sqrt(s2X / k), xOverdueX + dGamma * sqrt(s2X / k)]
+xOverdueU = mean(Utilization);
+s2U = sum((Utilization - xOverdueU) .^ 2) / (k - 1);
+Utilization = [xOverdueU - dGamma * sqrt(s2U / k), xOverdueU + dGamma * sqrt(s2U / k)];
 
-
-
-function [lowerBound, upperBound] = confidenceIntervals(valueConfidence, k, dGamma)
-    xOverdue = mean(valueConfidence);
-    s2 = sum((valueConfidence - xOverdue) .^ 2) / (k - 1);
-    [lowerBound, upperBound] = [xOverdueN - dGamma * sqrt(s2N / k), xOverdueN + dGamma * sqrt(s2N / k)];
-end
+fprintf(1, "R - Lower bound and Upper bound:")
+ResponseTime
+fprintf(1, "NumberOfJob - Lower bound and Upper bound:")
+NumberOfJob
+fprintf(1, "X - Lower bound and Upper bound:")
+Throughput
+fprintf(1, "Utilization - Lower bound and Upper bound:")
+Utilization

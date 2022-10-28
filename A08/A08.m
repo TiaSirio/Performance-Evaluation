@@ -12,17 +12,19 @@ numberOfJobStarted = 0;
 tPrepareJob = 0;
 tRunningFullSpeed = 0;
 tGarbageCollector = 0;
+tGarbageOn = 0;
+tGarbageOff = 0;
 
 state = 0;
 time = 0;
 dt = 0;
 nextState = 0;
 
-Tmax = 100000;
+N = 50000;
 
-while time < Tmax
+for i = 1:N
     % Job not prepared GC on
-	if state == 0
+    if state == 0
 		tPreparingJob = -log(rand()) / lambdaPrepareJob;
         tShuttingDownGarbage = -log(rand()) / lambdaGarbageEnd;
         if(tPreparingJob < tShuttingDownGarbage)
@@ -33,6 +35,7 @@ while time < Tmax
 		else
 			nextState = 1;
             dt = tShuttingDownGarbage;
+            tGarbageOn = tGarbageOn + dt;
         end
     % Job not prepared GC off
     elseif state == 1
@@ -46,6 +49,7 @@ while time < Tmax
 		else
 			nextState = 0;
             dt = tTurningOnGarbage;
+            tGarbageOff = tGarbageOff + dt;
 		end
     % Job starting GC on
     elseif state == 2
@@ -59,6 +63,7 @@ while time < Tmax
 		else
 			nextState = 3;
             dt = tShuttingDownGarbage;
+            tGarbageOn = tGarbageOn + dt;
         end
     % Job starting GC off
     else
@@ -72,16 +77,31 @@ while time < Tmax
 		else
 			nextState = 2;
             dt = tTurningOnGarbage;
+            tGarbageOff = tGarbageOff + dt;
         end
-	end
+    end
 
 	state = nextState;
 	time = time + dt;
-	
-	%trace(end + 1, :) = [t, s];
 end
 
-pPrepareNewJob = tPrepareJob / time
-pFullSpeed = tRunningFullSpeed / time
-pGarbageCollector = tGarbageCollector / time
-X = numberOfJobStarted / time
+pPrepareNewJob = tPrepareJob / time;
+pFullSpeed = tRunningFullSpeed / time;
+pGarbageCollector = tGarbageCollector / time;
+pGarbageOff = tGarbageOff / time;
+pGarbageOn = tGarbageOn / time;
+X = numberOfJobStarted / time;
+
+pCheck = pPrepareNewJob + pFullSpeed + pGarbageCollector + pGarbageOff + pGarbageOn;
+if (round(pCheck,3) ~= round(1,3))
+    error("Probability not corrispondent!")
+end
+
+fprintf(1, "Preparing a new job probability:")
+pPrepareNewJob
+fprintf(1, "Executing a job at full speed probability:")
+pFullSpeed
+fprintf(1, "Executing a job during garbage collection:")
+pGarbageCollector
+fprintf(1, "Throughput:")
+X
