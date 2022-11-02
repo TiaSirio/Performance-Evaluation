@@ -9,7 +9,7 @@ interArrivals = zeros(N, 1);
 
 for k = 1:N
     randValue = rand();
-    if randValue < probHyperExp(1,1)
+    if randValue < probHyperExp
         interArrivals(k) = -log(rand()) / lambdaHyperExp(1,1);
     else
         interArrivals(k) = -log(rand()) / lambdaHyperExp(1,2);
@@ -70,14 +70,14 @@ NumberOfJob = zeros(k,1);
 Throughput = zeros(k,1);
 
 for i = 1:k
-    start = (i - 1) * m + 1;
-    stop = m * i;
+    startCluster = (i - 1) * m + 1;
+    endCluster = m * i;
         
-    BusyTime(i) = sum(serviceTime(start:stop));
-    Time(i) = completionTime(stop) - arrivalTime(start);
+    BusyTime(i) = sum(serviceTime(startCluster:endCluster));
+    Time(i) = completionTime(endCluster) - arrivalTime(startCluster);
     Utilization(i) = BusyTime(i) / Time(i);
     
-    Workload(i) = sum(responseTime(start:stop));
+    Workload(i) = sum(responseTime(startCluster:endCluster));
     NumberOfJob(i) = Workload(i) / Time(i);
     
     Throughput(i) = m / Time(i);

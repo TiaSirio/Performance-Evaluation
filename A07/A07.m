@@ -9,8 +9,8 @@ bCpu = 20;
 pWorkingSystem = [0.5, 0.2, 0.3];
 cumSumWorkingSystem = cumsum(pWorkingSystem);
 
-lambdaHeatPump = 0.03;
-lambdaAirConditioning = 0.05;
+lambdaHeatPump = 0.05;
+lambdaAirConditioning = 0.03;
 
 state = 0;
 time = 0;

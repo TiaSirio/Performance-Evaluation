@@ -1,34 +1,47 @@
+%% Exercise
 clc, clear
 
-a = 1;
-b = 2;
-c = 0.5;
-d = 0.2;
+energyIdle = 0.1;
+energyCPU = 2;
+energyIO = 0.5;
+energyGPU = 10;
 
-Q = [-a - d, a, d;
-    0, -b, b;
-    c, 0, -c];
+energyAlpha = [energyIdle, energyCPU, energyIO, energyGPU];
 
-pi0 = [0, 0, 1];
+newJob = 1/20;
+returnIdle = 1/50;
+goingIO = 1/10;
+returnCPUFromIO = 1/5;
+goingGPU = 1/20;
+returnCPUFromGPU = 1/2;
 
-Tmax = 4;
+Q = [-newJob, newJob, 0, 0;
+    newJob, -newJob - goingIO - goingGPU, goingIO, goingGPU;
+    0, returnCPUFromIO, -returnCPUFromIO, 0;
+    0, returnCPUFromGPU, 0, -returnCPUFromGPU];
+
+pi0 = [1, 0, 0, 0];
+
+Tmax = 500;
 
 [t, pit] = ode45(@(t,x) Q' * x, [0 Tmax], pi0');
 
-%{
-j = 1;
-for i = 0: 0.05:4
-    t(j,1) = i;
-    pit(j,:) = pi0 * expm(Q * i); %Qualcosa
-    j = j + 1;
-end
-%}
-
-Qp = [ones(3,1), Q(:, 2:3)];
-
-u = [1, 0, 0];
-
-pis = u * inv(Qp)
-
 plot(t, pit, "-");
-legend("s1", "s2", "s3");
+legend("Idle", "CPU computation", "GPU computation", "I/O");
+title("Probability of various states");
+
+
+
+QCheck = [ones(4,1), Q(:, 2:4)];
+
+u = [1, 0, 0, 0];
+
+pis = u * inv(QCheck);
+
+
+%% Check
+pCheck = sum(pis);
+
+if (round(pCheck,3) ~= round(1,3))
+    error("Probability not corrispondent!")
+end

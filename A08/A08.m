@@ -31,7 +31,6 @@ for i = 1:N
 			nextState = 2;
             dt = tPreparingJob;
             tPrepareJob = tPrepareJob + dt;
-            numberOfJobStarted = numberOfJobStarted + 1;
 		else
 			nextState = 1;
             dt = tShuttingDownGarbage;
@@ -45,7 +44,6 @@ for i = 1:N
 			nextState = 3;
             dt = tPreparingJob;
             tPrepareJob = tPrepareJob + dt;
-            numberOfJobStarted = numberOfJobStarted + 1;
 		else
 			nextState = 0;
             dt = tTurningOnGarbage;
