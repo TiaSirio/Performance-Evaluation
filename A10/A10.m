@@ -21,16 +21,44 @@ Q = [-newJob, newJob, 0, 0;
     0, returnCPUFromGPU, 0, -returnCPUFromGPU];
 
 pi0 = [1, 0, 0, 0];
+%[0.1, 2, 0.5, 10];
 
 Tmax = 500;
 
 [t, pit] = ode45(@(t,x) Q' * x, [0 Tmax], pi0');
 
+figure
 plot(t, pit, "-");
 legend("Idle", "CPU computation", "GPU computation", "I/O");
 title("Probability of various states");
 
 
+
+alphaUtilization = [0, 2, 0.5, 10];
+powerUtilization = pit * alphaUtilization';
+
+figure
+plot(t, powerUtilization, "-");
+legend("Power");
+title("Utilization");
+
+endValuesUtilization = [pit(end,:) * alphaUtilization', max(pit * alphaUtilization')];
+
+
+
+alphaPowerConsumption = [0.1, 2, 0.5, 10];
+averagePowerConsumption = pit * alphaPowerConsumption';
+
+figure
+plot(t, averagePowerConsumption, "-");
+legend("Power");
+title("Average power consumption");
+
+
+
+
+
+%% Check
 
 QCheck = [ones(4,1), Q(:, 2:4)];
 
@@ -38,8 +66,6 @@ u = [1, 0, 0, 0];
 
 pis = u * inv(QCheck);
 
-
-%% Check
 pCheck = sum(pis);
 
 if (round(pCheck,3) ~= round(1,3))
