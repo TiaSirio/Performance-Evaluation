@@ -6,9 +6,7 @@ energyCPU = 2;
 energyIO = 0.5;
 energyGPU = 10;
 
-energyAlpha = [energyIdle, energyCPU, energyIO, energyGPU];
-
-newJob = 1/20;
+newJob = 1/10;
 returnIdle = 1/50;
 goingIO = 1/10;
 returnCPUFromIO = 1/5;
@@ -16,12 +14,11 @@ goingGPU = 1/20;
 returnCPUFromGPU = 1/2;
 
 Q = [-newJob, newJob, 0, 0;
-    newJob, -newJob - goingIO - goingGPU, goingIO, goingGPU;
+    returnIdle, -returnIdle - goingIO - goingGPU, goingIO, goingGPU;
     0, returnCPUFromIO, -returnCPUFromIO, 0;
     0, returnCPUFromGPU, 0, -returnCPUFromGPU];
 
 pi0 = [1, 0, 0, 0];
-%[0.1, 2, 0.5, 10];
 
 Tmax = 500;
 
@@ -34,7 +31,7 @@ title("Probability of various states");
 
 
 
-alphaUtilization = [0, 2, 0.5, 10];
+alphaUtilization = [0, 1, 1, 1];
 powerUtilization = pit * alphaUtilization';
 
 figure
@@ -46,7 +43,7 @@ endValuesUtilization = [pit(end,:) * alphaUtilization', max(pit * alphaUtilizati
 
 
 
-alphaPowerConsumption = [0.1, 2, 0.5, 10];
+alphaPowerConsumption = [energyIdle, energyCPU, energyIO, energyGPU];
 averagePowerConsumption = pit * alphaPowerConsumption';
 
 figure
@@ -56,7 +53,30 @@ title("Average power consumption");
 
 
 
+systemThroughput = [0, 0, 0, 0;
+                    1, 0, 0, 0;
+                    0, 0, 0, 0;
+                    0, 0, 0, 0];
 
+systemThroughputFinal = Q * systemThroughput';
+
+
+
+GPUThroughput = [0, 0, 0, 0;
+                 0, 0, 0, 0;
+                 0, 0, 0, 0;
+                 0, 1, 0, 0];
+
+GPUThroughputFinal = Q * GPUThroughput';
+
+
+
+IOThroughput = [0, 0, 0, 0;
+                0, 0, 0, 0;
+                0, 1, 0, 0;
+                0, 0, 0, 0];
+
+IOThroughputFinal = Q * IOThroughput';
 
 %% Check
 
