@@ -18,11 +18,34 @@ Q = [-newJob, newJob, 0, 0;
     0, returnCPUFromIO, -returnCPUFromIO, 0;
     0, returnCPUFromGPU, 0, -returnCPUFromGPU];
 
+systemThroughput = [0, 0, 0, 0;
+                    1, 0, 0, 0;
+                    0, 0, 0, 0;
+                    0, 0, 0, 0];
+
 pi0 = [1, 0, 0, 0];
 
 Tmax = 500;
 
 [t, pit] = ode45(@(t,x) Q' * x, [0 Tmax], pi0');
+
+%{
+j = 1;
+for i = 0:500
+    t(j,1) = i;
+    pit(j,:) = pi0 * expm(Q * i);
+
+    tr(j,1) = 0;
+
+    for ii = 1:4
+        for jj = 1:4
+            if ii ~= jj
+                tr(j,1) = tr(j,1) + pit(j,ii) * Q(ii,jj) * systemThroughput(ii, jj);
+            end
+        end
+    end
+end
+%}
 
 figure
 plot(t, pit, "-");
@@ -53,12 +76,13 @@ title("Average power consumption");
 
 
 
-systemThroughput = [0, 0, 0, 0;
-                    1, 0, 0, 0;
-                    0, 0, 0, 0;
-                    0, 0, 0, 0];
+QCheck = [ones(4,1), Q(:, 2:4)];
 
-systemThroughputFinal = Q * systemThroughput';
+u = [1, 0, 0, 0];
+
+pis = u * inv(QCheck);
+
+systemThroughputFinal = ((Q .* systemThroughput)') * pis';
 
 
 
@@ -67,7 +91,7 @@ GPUThroughput = [0, 0, 0, 0;
                  0, 0, 0, 0;
                  0, 1, 0, 0];
 
-GPUThroughputFinal = Q * GPUThroughput';
+GPUThroughputFinal = ((Q .* GPUThroughput)') * pis';
 
 
 
@@ -76,15 +100,9 @@ IOThroughput = [0, 0, 0, 0;
                 0, 1, 0, 0;
                 0, 0, 0, 0];
 
-IOThroughputFinal = Q * IOThroughput';
+IOThroughputFinal = ((Q .* IOThroughput)') * pis';
 
 %% Check
-
-QCheck = [ones(4,1), Q(:, 2:4)];
-
-u = [1, 0, 0, 0];
-
-pis = u * inv(QCheck);
 
 pCheck = sum(pis);
 

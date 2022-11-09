@@ -18,9 +18,9 @@ pn(1,1) = 0;
 pd(1,1) = 0;
 
 for i = 1:N
-    %r = rand();
-    %valueOfProbability = min(1, (i - N0)/(N - N0));
-    %if (i > N0) && valueOfProbability < r
+    r = rand();
+    valueOfProbability = min(1, (i - N0)/(N - N0));
+    if (i > N0) && valueOfProbability < r
         if i < N0
 		    lim1 = b;
         else
@@ -29,7 +29,7 @@ for i = 1:N
 	    mi = m;
 	    pn(1, i + 1) = pn(1, i) + log(lim1);
 	    pd(1, i + 1) = pd(1, i) + log(mi);
-    %end
+    end
 end
 
 p = exp(pn - pd);
