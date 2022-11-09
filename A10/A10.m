@@ -92,7 +92,7 @@ title("Probability of various states");
 figure
 plot(t, troughputSystem, "-", t, troughputGPU, "-", t, troughputIO, "-");
 legend("System throughput", "GPU throughput", "IO throughput");
-title("Transient");
+title("Transition rewards");
 
 
 
@@ -107,7 +107,7 @@ averagePowerConsumptionSteady = max(pit * alphaPowerConsumption');
 figure
 plot(t, powerUtilizationTransient, "-", t, averagePowerConsumptionTransient, "-");
 legend("Utilization", "Average power consumption");
-title("Power");
+title("State rewards");
 
 
 

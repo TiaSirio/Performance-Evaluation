@@ -27,3 +27,4 @@ p = exp(pn - pd);
 p = p / sum(p);
 
 plot(0:N, p);
+title("Buffer length distribution")
