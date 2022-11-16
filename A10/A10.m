@@ -86,7 +86,7 @@ pis = u * inv(QCheck);
 
 figure
 plot(t, pit, "-");
-legend("Idle", "CPU computation", "GPU computation", "I/O");
+legend("Idle", "CPU computation", "I/O", "GPU computation");
 title("Probability of various states");
 
 figure
@@ -133,15 +133,15 @@ if (round(averagePowerConsumptionSteady,3) ~= round(averagePowerConsumptionTrans
     error("Probability not corrispondent!")
 end
 
-if (round(systemThroughputSteady,3) ~= round(troughputSystem(end:1),3))
+if (round(systemThroughputSteady,3) ~= round(troughputSystem(end,1),3))
     error("Probability not corrispondent!")
 end
 
-if (round(GPUThroughputSteady,3) ~= round(troughputGPU(end:1),3))
+if (round(GPUThroughputSteady,3) ~= round(troughputGPU(end,1),3))
     error("Probability not corrispondent!")
 end
 
-if (round(IOThroughputSteady,3) ~= round(troughputIO(end:1),3))
+if (round(IOThroughputSteady,3) ~= round(troughputIO(end,1),3))
     error("Probability not corrispondent!")
 end
 
