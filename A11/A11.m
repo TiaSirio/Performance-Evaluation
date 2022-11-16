@@ -13,10 +13,10 @@ pn(1,1) = 0;
 pd(1,1) = 0;
 
 for i = 1:N
-    if i < N0
+    if i <= N0
 	    lim1 = b;
     else
-        lim1 = b * ((N - i) / (N - N0));
+        lim1 = b * ((N - i + 1) / (N - N0));
     end
 	    mi = m;
 	    pn(1, i + 1) = pn(1, i) + log(lim1);
@@ -26,5 +26,5 @@ end
 p = exp(pn - pd);
 p = p / sum(p);
 
-plot(0:N, p);
+plot(0:N, p, "+");
 title("Buffer length distribution")
