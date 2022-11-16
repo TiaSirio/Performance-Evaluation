@@ -1,5 +1,7 @@
 clc, clear;
 
+%% M/M/2
+
 lambda = 50;
 %lambda = 10;
 %averageServiceTime = 0.085;
@@ -31,6 +33,8 @@ t = 0.5;
 pOfResponseTimeGraterThanZeroDotFive = exp(-t/averageResponseTime);
 
 percentile90 = -log(1 - 0.9) * averageResponseTime;
+
+%% M/M/2
 
 newLambda = 85;
 numberOfServers = 2;
@@ -65,3 +69,20 @@ averageResponseTimeMultipleServers = averageServiceTime / (1 - (trafficIntensity
 averageTimeSpentInQueueMultipleServers = ((trafficIntensityMultipleServer^numberOfServers) * averageServiceTime) / (1 - (trafficIntensityMultipleServer^numberOfServers));
 
 averageNOfJobNotInService = averageTimeSpentInQueueMultipleServers * newLambda;
+
+fprintf("%f\n", U);
+fprintf("%f\n", pOfHavingOneJob);
+fprintf("%f\n", pOfHavingLessThanFourJob);
+fprintf("%f\n", averageNOfJobNotInService);
+fprintf("%f\n", averageResponseTime);
+fprintf("%f\n", pOfResponseTimeGraterThanZeroDotFive);
+fprintf("%f\n", percentile90);
+
+fprintf("\n\n");
+
+fprintf("%f\n", averageUMultipleServers);
+fprintf("%f\n", totalUMultipleServers);
+fprintf("%f\n", pOfHavingOneJobMultipleServers);
+fprintf("%f\n", pOfHavingLessThanFourJobMultipleServers);
+fprintf("%f\n", averageNOfJobNotInService);
+fprintf("%f\n", averageResponseTimeMultipleServers);
