@@ -88,7 +88,7 @@ for i = (numberOfServers + 1):finalCapacity
 end
 %}
 %Same operation as to M/M/1/16
-pOfHavingTheSystemFullMultipleServers = ((trafficIntensityMultipleServers^(finalCapacity)) - (trafficIntensityMultipleServers^(finalCapacity + 1)))/(1 - (trafficIntensityMultipleServers^(finalCapacity + 1)));
+pOfHavingTheSystemFullMultipleServers = pOfExactIndexMinusOnePacketsMultipleServers(end,1); %((trafficIntensityMultipleServers^(finalCapacity)) - (trafficIntensityMultipleServers^(finalCapacity + 1)))/(1 - (trafficIntensityMultipleServers^(finalCapacity + 1)));
 
 %Same operation as to M/M/1/16
 dropRateMultipleServers = lambdaMultipleServers * pOfHavingTheSystemFullMultipleServers;
