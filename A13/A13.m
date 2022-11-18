@@ -77,16 +77,21 @@ for i = 1:finalCapacity
     averageNMultipleServers = averageNMultipleServers + (i * pOfExactIndexMinusOnePacketsMultipleServers(i + 1));
 end
 
-averageUMultipleServers = (lambdaMultipleServers * averageServiceTime)/numberOfServers;
-%{
+averageUMultipleServers = 0;
+
 for i = 1:numberOfServers
     averageUMultipleServers = averageUMultipleServers + (i * pOfExactIndexMinusOnePacketsMultipleServers(i + 1));
 end
 
+valueForAverage = 0;
+
 for i = (numberOfServers + 1):finalCapacity
-    averageUMultipleServers = averageUMultipleServers + pOfExactIndexMinusOnePacketsMultipleServers(i + 1);
+    valueForAverage = valueForAverage + pOfExactIndexMinusOnePacketsMultipleServers(i + 1);
 end
-%}
+
+averageUMultipleServers = averageUMultipleServers + numberOfServers * valueForAverage;
+averageUMultipleServers = averageUMultipleServers/numberOfServers;
+
 %Same operation as to M/M/1/16
 pOfHavingTheSystemFullMultipleServers = pOfExactIndexMinusOnePacketsMultipleServers(end,1); %((trafficIntensityMultipleServers^(finalCapacity)) - (trafficIntensityMultipleServers^(finalCapacity + 1)))/(1 - (trafficIntensityMultipleServers^(finalCapacity + 1)));
 

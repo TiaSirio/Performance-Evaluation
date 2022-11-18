@@ -27,3 +27,5 @@ averageTimeSpentInQueue = (trafficIntensity * duration)/(1 - trafficIntensity);
 %}
 
 averageInterArrivalT = 1/lambda;
+
+trafficIntensity = duration/averageInterArrivalT;

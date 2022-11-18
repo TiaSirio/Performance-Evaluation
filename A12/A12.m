@@ -7,7 +7,7 @@ lambda = 50;
 %averageServiceTime = 0.085;
 averageServiceTime = 0.015;
 mu = 1 / averageServiceTime;
-N = 6;
+N = 4;
 pOfExactIndexMinusOneJob = zeros(N + 1,1);
 trafficIntensity = lambda * averageServiceTime;
 
