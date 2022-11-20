@@ -1,31 +1,58 @@
 clc, clear;
 
-lambda = 500;
+%% First point
+
+lambdaPoisson = 500;
 rateHypo = [1500, 1000];
-%{
-rangeHypoExp = 0:50;
 
-hypoExp = 1 - (rateHypo(1,2) * (exp(-rateHypo(1,1) * rangeHypoExp)) - rateHypo(1,1) * exp(-rateHypo(1,2) * rangeHypoExp)) / (rateHypo(1,2) - rateHypo(1,1));
+mean = (1/rateHypo(1,1)) + (1/rateHypo(1,2));
+standardDeviation = (1/rateHypo(1,1)^2) + (1/rateHypo(1,2)^2);
+coefficientOfVariation = sqrt((rateHypo(1,1)^2) + (rateHypo(1,2)^2))/(rateHypo(1,1) + rateHypo(1,2));
+duration = mean;
+secondMoment = 2 * ((1/(rateHypo(1,1)^2)) + (1/(rateHypo(1,1) * rateHypo(1,2))) + (1/(rateHypo(1,2)^2)));
 
-duration = mean(hypoExp);
+trafficIntensity = lambdaPoisson * duration;
 
-secondMoment = mean(hypoExp.^2);
+remainingTime = (lambdaPoisson * secondMoment)/2;
 
-trafficIntensity = lambda * duration;
+exactResponseTime = duration + ((lambdaPoisson * secondMoment)/(2 * (1 - trafficIntensity)));
 
-remainingTime = (lambda * secondMoment)/2;
+exactAverageN = trafficIntensity + (((lambdaPoisson^2) * secondMoment)/(2 * (1 - trafficIntensity)));
 
-averageResponseTime = duration + ((lambda * secondMoment)/(2 * (1 - trafficIntensity)));
+averageU = lambdaPoisson * duration;
 
-averageN = trafficIntensity + (((lambda^2) * secondMoment)/(2 * (1 - trafficIntensity)));
+%variance = secondMoment - (duration^2);
 
-variance = secondMoment - (duration^2);
+%coefficientOfVariation2 = variance/(duration^2);
 
-coefficientOfVariation = variance/(duration^2);
+%averageTimeSpentInQueue = (trafficIntensity * duration)/(1 - trafficIntensity);
 
-averageTimeSpentInQueue = (trafficIntensity * duration)/(1 - trafficIntensity);
-%}
 
-averageInterArrivalT = 1/lambda;
+%% G/G/2
 
-trafficIntensity = duration/averageInterArrivalT;
+numberOfStageErlang = 4;
+lambdaErlang = 4000;
+
+meanErlang = numberOfStageErlang/lambdaErlang;
+standardDeviationErlang = numberOfStageErlang/(lambdaErlang^2);
+coefficientOfVariationErlang = 1/(sqrt(numberOfStageErlang));
+durationMultipleServers = duration;
+
+averageInterArrivalT = 1/meanErlang;
+
+trafficIntensityMultipleServers = durationMultipleServers/(2 * averageInterArrivalT);
+
+%exactAverageUMultipleServers = trafficIntensityMultipleServers * 2;
+exactAverageUMultipleServers = (lambdaErlang * (durationMultipleServers / 2))/2;
+%exactAverageUMultipleServers = lambdaErlang * durationMultipleServers;
+
+exactAverageResponseTimeMultipleServers = durationMultipleServers + (((coefficientOfVariation^2) + (coefficientOfVariationErlang^2))/2) * (((trafficIntensityMultipleServers^2) * durationMultipleServers)/(1 - (trafficIntensityMultipleServers^2)));
+exactAverageNMultipleServers = exactAverageResponseTimeMultipleServers * averageInterArrivalT;
+
+fprintf("%f\n", averageU);
+fprintf("%f\n", exactResponseTime);
+fprintf("%f\n", exactAverageN);
+fprintf("\n");
+fprintf("%f\n", exactAverageUMultipleServers);
+fprintf("%f\n", exactAverageResponseTimeMultipleServers);
+fprintf("%f\n", exactAverageNMultipleServers);
