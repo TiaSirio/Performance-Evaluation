@@ -2,28 +2,22 @@ clc, clear;
 
 arrivalRate = [10, 0, 5];
 serviceTimes = [0.085, 0.075, 0.060];
-%arrivalRate = [0.5, 0, 0];
-%serviceTimes = [1, 2, 2.5];
+%arrivalRate = [10, 0, 0];
+%serviceTimes = [0.085, 0.075, 0.060];
 
-globalSpeed = sum(arrivalRate);
-throughput = globalSpeed;
+totalArrivalRate = sum(arrivalRate);
+throughput = totalArrivalRate;
 
 l = [0, 0, 0];
 
-pGen = [0, 0.3, 0.2;
-        1,   0,   0;
-        0.2, 0.8,  0];
-
-%{
-pGen = [0.7, 0.3, 0;
-        0.5, 0, 0.3;
-        1,   0,  0];
-%}
+pGen = [0, 1, 0;
+        0, 0, 1;
+        0, 0, 0];
 
 I = eye(3);
 
 for k = 1:length(arrivalRate)
-    l(1, k) = arrivalRate(1, k)/globalSpeed;
+    l(1, k) = arrivalRate(1, k)/totalArrivalRate;
 end
 
 visitsOfStations = l * (I - pGen)^-1;
@@ -32,23 +26,51 @@ serviceDemandsOfStations = [0, 0, 0];
 
 throughputOfStations = visitsOfStations * throughput;
 
-for i = 1:length(visitsOfStations)
+for i = 1:length(serviceDemandsOfStations)
     serviceDemandsOfStations(1, i) = visitsOfStations(1, i) * serviceTimes(1, i);
 end
 
-demandOfStation = [0, 0, 0];
+%serviceDemandsOfStations = [0.085, 0.075, 0.050];
 
-for i = 1:length(visitsOfStations)
-    demandOfStation(1, i) = visitsOfStations(1, i) * serviceDemandsOfStations(1, i);
+utilizationOfStation = throughput * serviceDemandsOfStations;
+
+residenceTimeOfStation = [0, 0, 0];
+
+for i = 1:length(residenceTimeOfStation)
+    residenceTimeOfStation(1, i) = serviceDemandsOfStations(1, i)/(1 - utilizationOfStation(1, i));
 end
 
-utilizationOfStation = throughput * demandOfStation;
+averageNumberOfJobInStation = totalArrivalRate * residenceTimeOfStation;
 
-%{
+averageSystemResponseTime = sum(residenceTimeOfStation);
+
+fprintf("Visits\n");
 for j = 1:length(visitsOfStations)
     fprintf("%f\n", visitsOfStations(1, j));
-    fprintf("%f\n", serviceDemandsOfStations(1, j));
-    fprintf("%f\n", throughputOfStations(1, j));
-    fprintf("\n");
 end
-%}
+fprintf("\n");
+
+fprintf("Demands\n");
+for j = 1:length(serviceDemandsOfStations)
+    fprintf("%f\n", serviceDemandsOfStations(1, j));
+end
+fprintf("\n");
+
+fprintf("Throughput\n");
+fprintf("%f\n", throughput);
+fprintf("\n");
+
+fprintf("Utilization\n");
+for j = 1:length(utilizationOfStation)
+    fprintf("%f\n", utilizationOfStation(1, j));
+end
+fprintf("\n");
+
+fprintf("Average number of jobs\n");
+for j = 1:length(averageNumberOfJobInStation)
+    fprintf("%f\n", averageNumberOfJobInStation(1, j));
+end
+fprintf("\n");
+
+fprintf("Average response time\n");
+fprintf("%f\n", averageSystemResponseTime);

@@ -42,12 +42,13 @@ averageInterArrivalT = 1/meanErlang;
 
 trafficIntensityMultipleServers = durationMultipleServers/(2 * averageInterArrivalT);
 
-exactAverageUMultipleServers = trafficIntensityMultipleServers * 2;
+exactAverageUMultipleServers = meanErlang * durationMultipleServers;
 %exactAverageUMultipleServers = (lambdaErlang * (durationMultipleServers / 2))/2;
 %exactAverageUMultipleServers = lambdaErlang * durationMultipleServers;
 
 exactAverageResponseTimeMultipleServers = durationMultipleServers + (((coefficientOfVariation^2) + (coefficientOfVariationErlang^2))/2) * (((trafficIntensityMultipleServers^2) * durationMultipleServers)/(1 - (trafficIntensityMultipleServers^2)));
-exactAverageNMultipleServers = exactAverageResponseTimeMultipleServers * averageInterArrivalT;
+exactAverageNMultipleServers = trafficIntensityMultipleServers + (((trafficIntensityMultipleServers^2) * ((coefficientOfVariation^2) + (coefficientOfVariationErlang^2)))/(2 * (1 - trafficIntensityMultipleServers)));
+%exactAverageNMultipleServers = meanErlang * exactAverageResponseTimeMultipleServers;
 
 fprintf("%f\n", averageU);
 fprintf("%f\n", exactResponseTime);
