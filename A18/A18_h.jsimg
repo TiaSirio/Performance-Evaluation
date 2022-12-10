@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<archive xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="A18_h.jsimg" timestamp="Fri Dec 02 20:18:47 CET 2022" xsi:noNamespaceSchemaLocation="Archive.xsd">
-    <sim disableStatisticStop="false" logDecimalSeparator="." logDelimiter="," logPath="C:\Users\Tia\JMT\" logReplaceMode="0" maxEvents="-1" maxSamples="1000000" name="A18_h.jsimg" polling="1.0" xsi:noNamespaceSchemaLocation="SIMmodeldefinition.xsd">
+<archive xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="A18_h.jsimg" timestamp="Sun Dec 11 00:16:35 CET 2022" xsi:noNamespaceSchemaLocation="Archive.xsd">
+    <sim disableStatisticStop="false" logDecimalSeparator="." logDelimiter="," logPath="C:\Users\Tia\JMT" logReplaceMode="0" maxEvents="-1" maxSamples="1000000" name="A18_h.jsimg" polling="1.0" xsi:noNamespaceSchemaLocation="SIMmodeldefinition.xsd">
         <userClass name="Class1" priority="0" referenceSource="Source 1" type="open"/>
         <node name="Source 1">
             <section className="RandomSource">
@@ -64,7 +64,7 @@
                         <subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
                         <subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
                             <subParameter classPath="java.lang.Double" name="lambda">
-                                <value>0.008333333333333333</value>
+                                <value>30.0</value>
                             </subParameter>
                         </subParameter>
                     </subParameter>
@@ -117,7 +117,7 @@
                         <subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
                         <subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
                             <subParameter classPath="java.lang.Double" name="lambda">
-                                <value>0.004761904761904762</value>
+                                <value>17.1428571429551</value>
                             </subParameter>
                         </subParameter>
                     </subParameter>
@@ -126,7 +126,7 @@
             <section className="Router">
                 <parameter array="true" classPath="jmt.engine.NetStrategies.RoutingStrategy" name="RoutingStrategy">
                     <refClass>Class1</refClass>
-                    <subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy" name="Random"/>
+                    <subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RoundRobinStrategy" name="Round Robin"/>
                 </parameter>
             </section>
         </node>
@@ -170,7 +170,7 @@
                         <subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
                         <subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
                             <subParameter classPath="java.lang.Double" name="lambda">
-                                <value>0.002777777777777778</value>
+                                <value>10.0</value>
                             </subParameter>
                         </subParameter>
                     </subParameter>
@@ -179,7 +179,7 @@
             <section className="Router">
                 <parameter array="true" classPath="jmt.engine.NetStrategies.RoutingStrategy" name="RoutingStrategy">
                     <refClass>Class1</refClass>
-                    <subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RoundRobinStrategy" name="Round Robin"/>
+                    <subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy" name="Random"/>
                 </parameter>
             </section>
         </node>
@@ -223,7 +223,7 @@
                         <subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
                         <subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
                             <subParameter classPath="java.lang.Double" name="lambda">
-                                <value>0.0030303030303030303</value>
+                                <value>10.90909090909091</value>
                             </subParameter>
                         </subParameter>
                     </subParameter>
@@ -232,7 +232,7 @@
             <section className="Router">
                 <parameter array="true" classPath="jmt.engine.NetStrategies.RoutingStrategy" name="RoutingStrategy">
                     <refClass>Class1</refClass>
-                    <subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RoundRobinStrategy" name="Round Robin"/>
+                    <subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy" name="Random"/>
                 </parameter>
             </section>
         </node>
@@ -276,9 +276,102 @@
         <parametric classPath="jmt.gui.common.definitions.parametric.ArrivalRateParametricAnalysis" enabled="true">
             <field name="Class" value="Class1"/>
             <field name="Is single class" value="true"/>
-            <field name="Steps" value="10"/>
+            <field name="Steps" value="11"/>
             <field name="To" value="20.0"/>
             <field name="Type" value="Arrival rates"/>
         </parametric>
     </jmodel>
+    <results elapsedTime="0" logDecimalSeparator="." logDelimiter="," pollingInterval="0.0" xsi:noNamespaceSchemaLocation="Results.xsd">
+        <measure alpha="0.99" analyzedSamples="11" name="Network_All classes_System Throughput" nodeType="" precision="0.03" referenceClass="All classes" referenceStation="Network" type="9">
+            <sample lowerBound="9.629957892444489" meanValue="9.842135631621879" upperBound="10.063873881295326" validity="true"/>
+            <sample lowerBound="10.805388750625378" meanValue="10.971994944972742" upperBound="11.143819334888647" validity="true"/>
+            <sample lowerBound="11.542590707043308" meanValue="11.88786408745505" upperBound="12.254430730126568" validity="true"/>
+            <sample lowerBound="12.54605014086757" meanValue="12.797886815865896" upperBound="13.060040817962905" validity="true"/>
+            <sample lowerBound="13.422770849986732" meanValue="13.721572822459596" upperBound="14.033980834322975" validity="true"/>
+            <sample lowerBound="14.072765343091168" meanValue="14.488472519118227" upperBound="14.929487115540866" validity="true"/>
+            <sample lowerBound="14.884637701990648" meanValue="15.17260839746417" upperBound="15.47194156649614" validity="true"/>
+            <sample lowerBound="15.560771054762215" meanValue="15.776655789817902" upperBound="15.998615020032304" validity="true"/>
+            <sample lowerBound="15.633250622076849" meanValue="16.09851287258573" upperBound="16.592317993308615" validity="true"/>
+            <sample lowerBound="16.07568572163073" meanValue="16.36810429525153" upperBound="16.67135822018414" validity="true"/>
+            <sample lowerBound="16.41140708910512" meanValue="16.688963086819903" upperBound="16.97606886052197" validity="true"/>
+        </measure>
+        <measure alpha="0.99" analyzedSamples="11" name="Processing_All classes_Drop Rate" nodeType="station" precision="0.03" referenceClass="All classes" referenceStation="Processing" type="6">
+            <sample lowerBound="0.02834893360993145" meanValue="0.028787166837136096" upperBound="0.029239161694023463" validity="true"/>
+            <sample lowerBound="0.05048884781953325" meanValue="0.051762167609177276" upperBound="0.05310137486774023" validity="true"/>
+            <sample lowerBound="0.08840932230410752" meanValue="0.0908203061619029" upperBound="0.09336647503065473" validity="true"/>
+            <sample lowerBound="0.15643046310196312" meanValue="0.16078726004967023" upperBound="0.16539369495408043" validity="true"/>
+            <sample lowerBound="0.2758153611706816" meanValue="0.2832455503847831" upperBound="0.2910871461706775" validity="true"/>
+            <sample lowerBound="0.47482353454332643" meanValue="0.4880167746080796" upperBound="0.5019641314866039" validity="true"/>
+            <sample lowerBound="0.7709836465481826" meanValue="0.7882951130965035" upperBound="0.8064018508038411" validity="true"/>
+            <sample lowerBound="1.2118293050755031" meanValue="1.234990789781055" upperBound="1.2590548889337592" validity="true"/>
+            <sample lowerBound="1.7847823305290487" meanValue="1.8373227557815381" upperBound="1.8930503759371224" validity="true"/>
+            <sample lowerBound="2.497590292470321" meanValue="2.549301358657563" upperBound="2.6031989877277852" validity="true"/>
+            <sample lowerBound="3.237118674084875" meanValue="3.306692024058065" upperBound="3.379321652967279" validity="true"/>
+        </measure>
+        <measure alpha="0.99" analyzedSamples="11" name="Network_All classes_System Response Time" nodeType="" precision="0.03" referenceClass="All classes" referenceStation="Network" type="8">
+            <sample lowerBound="0.3247334104005915" meanValue="0.334195060482846" upperBound="0.34365671056510044" validity="true"/>
+            <sample lowerBound="0.3647697420754327" meanValue="0.3738988204038019" upperBound="0.3830278987321711" validity="true"/>
+            <sample lowerBound="0.41079795906541516" meanValue="0.41872954961865727" upperBound="0.4266611401718994" validity="true"/>
+            <sample lowerBound="0.46120731790292985" meanValue="0.4723401032531949" upperBound="0.48347288860346" validity="true"/>
+            <sample lowerBound="0.5275088378523836" meanValue="0.5398274305859089" upperBound="0.5521460233194342" validity="true"/>
+            <sample lowerBound="0.5901675230947194" meanValue="0.6027752991525085" upperBound="0.6153830752102976" validity="true"/>
+            <sample lowerBound="0.6745486383299533" meanValue="0.6894511836209745" upperBound="0.7043537289119957" validity="true"/>
+            <sample lowerBound="0.7556896733802596" meanValue="0.7780732583307249" upperBound="0.8004568432811903" validity="true"/>
+            <sample lowerBound="0.8259953272320164" meanValue="0.8441280645602033" upperBound="0.8622608018883902" validity="true"/>
+            <sample lowerBound="0.8899273137854619" meanValue="0.9170721556993345" upperBound="0.9442169976132072" validity="true"/>
+            <sample lowerBound="0.9488566101720283" meanValue="0.9686501116741508" upperBound="0.9884436131762734" validity="true"/>
+        </measure>
+        <measure alpha="0.99" analyzedSamples="11" name="Processing_All classes_Response Time" nodeType="station" precision="0.03" referenceClass="All classes" referenceStation="Processing" type="2">
+            <sample lowerBound="0.047732718462983825" meanValue="0.04913784028982717" upperBound="0.05054296211667052" validity="true"/>
+            <sample lowerBound="0.0506566507474182" meanValue="0.05216995686498919" upperBound="0.053683262982560175" validity="true"/>
+            <sample lowerBound="0.05499477193513429" meanValue="0.056449800207078314" upperBound="0.05790482847902234" validity="true"/>
+            <sample lowerBound="0.05925563271624809" meanValue="0.06041346582323828" upperBound="0.061571298930228474" validity="true"/>
+            <sample lowerBound="0.06424760043005559" meanValue="0.06600663671960139" upperBound="0.06776567300914718" validity="true"/>
+            <sample lowerBound="0.07164124505041049" meanValue="0.07360262765803702" upperBound="0.07556401026566355" validity="true"/>
+            <sample lowerBound="0.0855226963868803" meanValue="0.08765118649020799" upperBound="0.08977967659353568" validity="true"/>
+            <sample lowerBound="0.09689546439847022" meanValue="0.0990323595692394" upperBound="0.1011692547400086" validity="true"/>
+            <sample lowerBound="0.11087861244759371" meanValue="0.11346450503006555" upperBound="0.1160503976125374" validity="true"/>
+            <sample lowerBound="0.12365850178062686" meanValue="0.1266652006764846" upperBound="0.12967189957234235" validity="true"/>
+            <sample lowerBound="0.13857885942995438" meanValue="0.1415811396382592" upperBound="0.144583419846564" validity="true"/>
+        </measure>
+        <measure alpha="0.99" analyzedSamples="11" name="Preparing_All classes_Response Time" nodeType="station" precision="0.03" referenceClass="All classes" referenceStation="Preparing" type="2">
+            <sample lowerBound="0.13276311377446579" meanValue="0.13667855395680728" upperBound="0.14059399413914878" validity="true"/>
+            <sample lowerBound="0.15478998612151984" meanValue="0.15923153575786556" upperBound="0.16367308539421127" validity="true"/>
+            <sample lowerBound="0.1771462780173266" meanValue="0.18156053537796893" upperBound="0.18597479273861126" validity="true"/>
+            <sample lowerBound="0.2051009898497709" meanValue="0.21037826583042046" upperBound="0.21565554181107002" validity="true"/>
+            <sample lowerBound="0.24650868209014884" meanValue="0.25333516580229615" upperBound="0.2601616495144435" validity="true"/>
+            <sample lowerBound="0.2806052333634969" meanValue="0.2875919847010361" upperBound="0.29457873603857526" validity="true"/>
+            <sample lowerBound="0.32612740251704603" meanValue="0.3336736433147598" upperBound="0.34121988411247356" validity="true"/>
+            <sample lowerBound="0.3648562231645876" meanValue="0.37235193447498" upperBound="0.3798476457853724" validity="true"/>
+            <sample lowerBound="0.40331660969461053" meanValue="0.41400276953153675" upperBound="0.424688929368463" validity="true"/>
+            <sample lowerBound="0.4316648657367084" meanValue="0.44216025132344894" upperBound="0.45265563691018945" validity="true"/>
+            <sample lowerBound="0.4618354007516606" meanValue="0.4709540227626979" upperBound="0.4800726447737352" validity="true"/>
+        </measure>
+        <measure alpha="0.99" analyzedSamples="11" name="Channel 1_All classes_Response Time" nodeType="station" precision="0.03" referenceClass="All classes" referenceStation="Channel 1" type="2">
+            <sample lowerBound="0.15588365162777892" meanValue="0.1600953481326319" upperBound="0.16430704463748488" validity="true"/>
+            <sample lowerBound="0.17062988703698317" meanValue="0.17531548337647626" upperBound="0.18000107971596935" validity="true"/>
+            <sample lowerBound="0.18946413211968613" meanValue="0.19502263822859048" upperBound="0.20058114433749483" validity="true"/>
+            <sample lowerBound="0.21461982078762334" meanValue="0.21956955419428278" upperBound="0.22451928760094222" validity="true"/>
+            <sample lowerBound="0.23558832828633075" meanValue="0.24272865128428073" upperBound="0.2498689742822307" validity="true"/>
+            <sample lowerBound="0.26623353312332226" meanValue="0.27200378762069766" upperBound="0.27777404211807305" validity="true"/>
+            <sample lowerBound="0.2960377605527959" meanValue="0.3041324795730459" upperBound="0.3122271985932959" validity="true"/>
+            <sample lowerBound="0.3371826795820775" meanValue="0.3438678169267143" upperBound="0.35055295427135114" validity="true"/>
+            <sample lowerBound="0.3680588094240455" meanValue="0.3769182656957973" upperBound="0.38577772196754906" validity="true"/>
+            <sample lowerBound="0.39618571042457174" meanValue="0.40728280251662585" upperBound="0.41837989460867997" validity="true"/>
+            <sample lowerBound="0.42787378423985445" meanValue="0.43991938624798793" upperBound="0.4519649882561214" validity="true"/>
+        </measure>
+        <measure alpha="0.99" analyzedSamples="11" name="Channel 2_All classes_Response Time" nodeType="station" precision="0.03" referenceClass="All classes" referenceStation="Channel 2" type="2">
+            <sample lowerBound="0.13386803440093478" meanValue="0.13694809868405833" upperBound="0.14002816296718187" validity="true"/>
+            <sample lowerBound="0.14517897803387675" meanValue="0.14889003320293148" upperBound="0.15260108837198622" validity="true"/>
+            <sample lowerBound="0.15883851360745666" meanValue="0.16210209413834908" upperBound="0.1653656746692415" validity="true"/>
+            <sample lowerBound="0.17194669283464778" meanValue="0.1750864700993529" upperBound="0.17822624736405804" validity="true"/>
+            <sample lowerBound="0.1883419284195651" meanValue="0.19381150377964235" upperBound="0.1992810791397196" validity="true"/>
+            <sample lowerBound="0.20724100415502736" meanValue="0.2122300938038142" upperBound="0.21721918345260102" validity="true"/>
+            <sample lowerBound="0.22363935700456086" meanValue="0.23006992819082098" upperBound="0.2365004993770811" validity="true"/>
+            <sample lowerBound="0.24178090562163385" meanValue="0.24838684497703345" upperBound="0.25499278433243305" validity="true"/>
+            <sample lowerBound="0.2548160327720531" meanValue="0.2622955515446926" upperBound="0.26977507031733206" validity="true"/>
+            <sample lowerBound="0.26916230472111247" meanValue="0.2767788105033317" upperBound="0.2843953162855509" validity="true"/>
+            <sample lowerBound="0.2799875690810487" meanValue="0.28678390891113686" upperBound="0.293580248741225" validity="true"/>
+        </measure>
+    </results>
 </archive>
