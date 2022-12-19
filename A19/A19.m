@@ -1,27 +1,42 @@
 clc, clear;
 
-lambdaE = 5;
-lambdaP = 10;
+lambda = [5;
+         10];
 
-D1E = 0.05;
-D1P = 0.06;
-D2E = 0.1;
-D2P = 0.04;
+D = [0.05, 0.1;
+    0.06, 0.04];
 
-U1E = lambdaE * D1E;
-U1P = lambdaE * D1P;
-U2E = lambdaP * D2E;
-U2P = lambdaP * D2P;
+%{
+lambda = [0.1;
+          10];
 
-U1 = U1E + U1P;
-U2 = U2E + U2P;
+D = [2, 5;
+     0.06, 0.04];
+%}
+Uck = D .* [lambda lambda];
 
-R1E = D1E / (1 - (U1));
-R1P = D1P / (1 - (U1));
-R2E = D2E / (1 - (U2));
-R2P = D2P / (1 - (U2));
+Uk = sum(Uck);
 
-R1 = R1E + R1P;
-R2 = R2E + R2P;
+Xc = lambda;
 
-RTot = R1 + R2;
+X = sum(Xc);
+
+Rck = D ./ (1 - [Uk; Uk]);
+
+Rk = sum(Xc ./ [X; X] .* Rck);
+
+R = sum(Rk);
+
+fprintf("Utilization\n");
+fprintf("CRM: %f\n", Uk(1));
+fprintf("FS: %f\n", Uk(2));
+fprintf("\n");
+
+fprintf("Residence time\n");
+fprintf("CRM: %f\n", Rk(1));
+fprintf("FS: %f\n", Rk(2));
+fprintf("\n");
+
+fprintf("System response time\n");
+fprintf("%f\n", R);
+fprintf("\n");
