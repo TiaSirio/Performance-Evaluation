@@ -1,176 +1,235 @@
 %% INTRO
 clc, clear
 
-SPEC = 1;
-DESIGN = 2;
-BREADBOARD = 3;
-SW = 4;
-TEST = 5;
-
-names = ["Spec", "Design", "Breadbrd", "Software", "Test"];
-
-names = string(names);
+namesOfDepartments = ["Spec", "Design", "Breadbrd", "Software", "Test"];
+namesOfDepartments = string(namesOfDepartments);
 
 fileOrigin = "Traces/TraceC-";
 fileFinalPart = ".txt";
 
-duration = table;
+%duration = zeros(size(namesOfDepartments));
 
-for col = 1:size(names, 2)
-    file = strcat(fileOrigin, names(col), fileFinalPart);
+for col = 1:size(namesOfDepartments, 2)
+    file = strcat(fileOrigin, namesOfDepartments(col), fileFinalPart);
     duration(:,col) = array2table(csvread(file));
 end
 
-duration.Properties.VariableNames = names;
+duration.Properties.VariableNames = namesOfDepartments;
 
 N = size(duration, 1);
 
-HyperExpCDF = @(p, t) 1 - p(1,3) * exp(-p(1,1) * t) - (1 - p(1,3)) * exp(-p(1,2) * t);
-HyperExpMoments = @(p, t) [t/p(1,1) + (1-t)/p(1,2), 2 * (t/(p(1,1)^2) + (1-t)/(p(1,2)^2)), 6 * (t/(p(1,1)^3) + ((1-t)/(p(1,2)^3)))];
-
-
 %% SPEC
 
-t = duration.Spec;
-t = sortrows(t);
-sigma = std(t);
-mu = sum(t) / N;
-cv = sigma / mu;
-max_value = t(N);
-interval = (0:0.1:max_value);
-k = 1/(cv)^2;
-theta = mu/k;
-yGammaCDFSpec = gamcdf(interval, k, theta);
+durationSpec = sortrows(duration.Spec);
+sigmaSpec = std(durationSpec);
+firstMomentSpec = sum(durationSpec) / N;
+coefficientOfVariationSpec = sigmaSpec / firstMomentSpec;
+maxValueSpec = max(durationSpec);
+maxValueSpec = ceil(maxValueSpec);
+tSpec = (0:0.1:maxValueSpec);
+kSpec = 1/(coefficientOfVariationSpec)^2;
+thetaSpec = firstMomentSpec/kSpec;
+yGammaSpecCDF = gamcdf(tSpec, kSpec, thetaSpec);
 
 figure;
-plot(t, (1:N)/N, ".b", interval, yGammaCDFSpec', "r");
-legend("Trace", names(SPEC));
-title(names(SPEC));
+plot(durationSpec, (1:N)/N, "b", tSpec, yGammaSpecCDF', "y");
+legend("Gamma - ", namesOfDepartments(1));
+title("Best fitting: " + namesOfDepartments(1));
 
 %% DESIGN
 
-t = duration.Design;
-t = sortrows(t);
-sigma = std(t);
-mu = sum(t) / N;
-cv = sigma / mu;
-max_value = t(N);
-interval = (0:0.1:max_value);
-k = 1/(cv)^2;
-theta = mu/k;
-yGammaCDFSpec = gamcdf(interval, k, theta);
+durationDesign = sortrows(duration.Design);
+sigmaDesign = std(durationDesign);
+firstMomentDesign = sum(durationDesign) / N;
+coefficientOfVariationDesign = sigmaDesign / firstMomentDesign;
+maxValueDesign = max(durationDesign);
+maxValueDesign = ceil(maxValueDesign);
+tDesign = (0:0.1:maxValueDesign);
+kDesign = 1/(coefficientOfVariationDesign)^2;
+thetaDesign = firstMomentDesign/kDesign;
+yGammaDesignCDF = gamcdf(tDesign, kDesign, thetaDesign);
 
 figure;
-plot(t, (1:N)/N, ".b", interval, yGammaCDFSpec', "r");
-legend("Trace", names(DESIGN));
-title(names(DESIGN));
+plot(durationDesign, (1:N)/N, "b", tDesign, yGammaDesignCDF', "y");
+legend("Gamma - ", namesOfDepartments(2));
+title("Best fitting: " + namesOfDepartments(2));
 
 %% BREADBOARD
 
-t = duration.Breadbrd;
-t = sortrows(t);
+durationBreadboard = sortrows(duration.Breadbrd);
 
-sigma = std(t);
-mu = sum(t) / N;
-m2 = sum(t.^2) / N;
-m3 = sum(t.^3) / N;
+sigmaBreadboard = std(durationBreadboard);
+firstMomentBreadboard = sum(durationBreadboard) / N;
+secondMomentBreadboard = sum(durationBreadboard .^2) / N;
+thirdMomentBreadboard = sum(durationBreadboard .^3) / N;
 
-cv = sigma / mu;
+coefficientOfVariationBreadboard = sigmaBreadboard / firstMomentBreadboard;
 
-max_value = t(N);
-interval = (0:0.1:max_value);
+maxValueBreadboard = max(durationBreadboard);
+maxValueBreadboard = ceil(maxValueBreadboard);
+tBreadboard = (0:0.1:maxValueBreadboard);
 
-FunctionHyperEM = @(p) (HyperExpMoments(p(1, 1:2), p(1,3)) ./ [mu, m2, m3] - 1);
+MomentsHyperExpBreadboard = @(p, t) [t/p(1,1) + (1-t)/p(1,2), 2 * (t/(p(1,1)^2) + (1-t)/(p(1,2)^2)), 6 * (t/(p(1,1)^3) + ((1-t)/(p(1,2)^3)))];
+FunctionHyperExpBreadboard = @(p) (MomentsHyperExpBreadboard(p(1, 1:2), p(1,3)) ./ [firstMomentBreadboard, secondMomentBreadboard, thirdMomentBreadboard] - 1);
 
-if cv > 1
-    lambda = [(0.8 / mu), (1.2 / mu)];
-    p = 0.4;
-    var = [lambda(1,1), lambda(1,2), p];
+if coefficientOfVariationBreadboard > 1
+    lambdaBreadboard = [(0.8 / firstMomentBreadboard), (1.2 / firstMomentBreadboard)];
+    pBreadboard = 0.4;
+    varBreadboard = [lambdaBreadboard(1,1), lambdaBreadboard(1,2), pBreadboard];
 
-    res = fsolve(FunctionHyperEM, var);
-    p = res(3);
-    lambda = res(1:2);
-    y2HyperExpM = HyperExpCDF(res, interval);
+    resBreadboard = fsolve(FunctionHyperExpBreadboard, varBreadboard);
+    clc
+
+    pBreadboard = resBreadboard(3);
+    lambdaBreadboard = resBreadboard(1:2);
+    
+    HyperExpBreadboardCDF = @(p, t) 1 - p(1,3) * exp(-p(1,1) * t) - (1 - p(1,3)) * exp(-p(1,2) * t);
+    yHyperExpBreadboard = HyperExpBreadboardCDF(resBreadboard, tBreadboard);
 
     figure
-    plot(t, (1:N)/N, ".b", interval, y2HyperExpM, "r");
-    legend("Traces", names(BREADBOARD));
-    title(names(BREADBOARD));
+    plot(durationBreadboard, (1:N)/N, "b", tBreadboard, yHyperExpBreadboard, "y");
+    legend("Hyper-exponential - ", namesOfDepartments(3));
+    title("Best fitting: " + namesOfDepartments(3));
 end
 
-%% SW
+%% SOFTWARE
 
-t = duration.Software;
-t = sortrows(t);
+durationSoftware = sortrows(duration.Software);
 
-sigma = std(t);
-mu = sum(t) / N;
-m2 = sum(t.^2) / N;
-m3 = sum(t.^3) / N;
+sigmaSoftware = std(durationSoftware);
+firstMomentSoftware = sum(durationSoftware) / N;
+secondMomentSoftware = sum(durationSoftware .^2) / N;
+thirdMomentSoftware = sum(durationSoftware .^3) / N;
 
-cv = sigma / mu;
+coefficientOfVariationSoftware = sigmaSoftware / firstMomentSoftware;
 
-max_value = t(N);
-interval = (0:0.1:max_value);
+maxValueSoftware = max(durationSoftware);
+maxValueSoftware = ceil(maxValueSoftware);
+tSoftware = (0:0.1:maxValueSoftware);
 
-FunctionHyperEM = @(p) (HyperExpMoments(p(1, 1:2), p(1,3)) ./ [mu, m2, m3] - 1);
+MomentsHyperExpSoftware = @(p, t) [t/p(1,1) + (1-t)/p(1,2), 2 * (t/(p(1,1)^2) + (1-t)/(p(1,2)^2)), 6 * (t/(p(1,1)^3) + ((1-t)/(p(1,2)^3)))];
+FunctionHyperExpSoftware = @(p) (MomentsHyperExpSoftware(p(1, 1:2), p(1,3)) ./ [firstMomentSoftware, secondMomentSoftware, thirdMomentSoftware] - 1);
 
-if cv > 1
-    lambda = [(0.8 / mu), (1.2 / mu)];
-    p = 0.4;
-    var = [lambda(1,1), lambda(1,2), p];
+if coefficientOfVariationSoftware > 1
+    lambdaSoftware = [(0.8 / firstMomentSoftware), (1.2 / firstMomentSoftware)];
+    pSoftware = 0.4;
+    varSoftware = [lambdaSoftware(1,1), lambdaSoftware(1,2), pSoftware];
 
-    res = fsolve(FunctionHyperEM, var);
-    p = res(3);
-    lambda = res(1:2);
-    y2HyperExpM = HyperExpCDF(res, interval);
+    resSoftware = fsolve(FunctionHyperExpSoftware, varSoftware);
+    clc
+
+    pSoftware = resSoftware(3);
+    lambdaSoftware = resSoftware(1:2);
+
+    HyperExpSoftwareCDF = @(p, t) 1 - p(1,3) * exp(-p(1,1) * t) - (1 - p(1,3)) * exp(-p(1,2) * t);
+    yHyperExpSoftware = HyperExpSoftwareCDF(resSoftware, tSoftware);
 
     figure
-    plot(t, (1:N)/N, ".b", interval, y2HyperExpM, "r");
-    legend("Traces", names(SW));
-    title(names(SW));
+    plot(durationSoftware, (1:N)/N, "b", tSoftware, yHyperExpSoftware, "y");
+    legend("Hyper-exponential - ", namesOfDepartments(4));
+    title("Best fitting: " + namesOfDepartments(4));
 end
 
 
 %% TEST
 
-t = duration.Test;
-t = sortrows(t);
+durationTest = sortrows(duration.Test);
 
-mu = sum(t) / N;
-lambda = 1  / mu;
+firstMomentTest = sum(durationTest) / N;
+lambdaTest = 1  / firstMomentTest;
 
-max_value = t(N);
-interval = (0:0.1:max_value);
-yExp = 1 - exp(-lambda * interval);
+maxValueTest = max(durationTest);
+maxValueTest = ceil(maxValueTest);
+tTest = (0:0.1:maxValueTest);
+yExpTest = 1 - exp(-lambdaTest * tTest);
 
 figure;
-plot(t, (1:N)/N, ".b", interval, yExp', "r");
-legend('Trace', names(TEST));
-title(names(TEST));
+plot(durationTest, (1:N)/N, "b", tTest, yExpTest', "y");
+legend("Exponential - ", namesOfDepartments(5));
+title("Best fitting: " + namesOfDepartments(5));
 
 
+%% Tests
 
-%% Closed model - MVA
+for i = 1:length(namesOfDepartments)
+    % Setup
+    durationTemp = sortrows(table2array(duration(:, i)));
+    sigma = std(durationTemp);
+    firstMoment = sum(durationTemp) / N;
+    secondMoment = sum(durationTemp .^2) / N;
+    thirdMoment = sum(durationTemp .^3) / N;
+    coefficientOfVariation = sigma / firstMoment;
+    maxValue = max(durationTemp);
+    maxValue = ceil(maxValue);
+    t = (0:0.1:maxValue);
 
-d = [duration.Spec, max(duration.Design + duration.Breadbrd, duration.Software), duration.Test];
+    % Uniform
+    a_unif = firstMoment - 0.5 * sqrt(12 * (secondMoment - firstMoment .^ 2));
+    b_unif = firstMoment + 0.5 * sqrt(12 * (secondMoment - firstMoment .^ 2));
 
-d = mean(d);
+    yUnif = max(0, min(1, (t - a_unif) / (b_unif - a_unif)));
 
-N = 2;
+    % Exponential
+    lambda_exp = 1  / firstMoment;
+    yExp = 1 - exp(-lambda_exp * t);
 
-Nk = zeros(1,3);
-Rk = zeros(1,3);
-R = 0;
-X = 0;
+    % Erlang
+    k = round(1/(coefficientOfVariation^2));
+    lambda = k / firstMoment;
 
-for i = 1:N
-    Rk = d .* (Nk + 1);
-    R = sum(Rk);
-    X = i / (R);
-    Nk = X .* Rk;
+    yErlangCDF = 1;
+    for stage = 0:k - 1
+        yErlangCDF = yErlangCDF - ((exp(-lambda * t) .* (lambda * t) .^ stage) / (factorial(stage)));
+    end
+
+    % Gamma
+    k = 1/(coefficientOfVariation)^2;
+    theta = firstMoment/k;
+    yGammaCDF = gamcdf(t, k, theta);
+
+    % Hypo-exponential
+    if coefficientOfVariation < 1
+        pars = [1/(0.3 * firstMoment), 1/(0.7 * firstMoment)];
+
+        HypoExpMoments = @(p) [(1/p(1,1) + 1/p(1,2)), 2 * (1/p(1,1)^2 + 1/(p(1,1) * p(1,2)) + 1/p(1,2)^2)];
+
+        FunctionHypoExpM = @(p) (HypoExpMoments(p) ./ [firstMoment, secondMoment] - 1);
+
+        resultOfHypoExpM = fsolve(FunctionHypoExpM, pars);
+        clc
+
+        HypoExpCDF = @(p, t) 1 - 1/(p(1,2) - p(1,1)) * (p(1,2) * exp(-p(1,1) * t) - p(1,1) * exp(-p(1,2) * t));
+
+        yHypoExp = HypoExpCDF(resultOfHypoExpM, t);
+
+        % Figure
+        figure
+        plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHypoExp, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
+        legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution', 'Erlang')
+        title("Fittings: " + namesOfDepartments(i))
+    end
+
+    % Hyper-exponential
+    if coefficientOfVariation > 1
+        lam = [(0.8 / firstMoment), (1.2 / firstMoment)];
+        prob = 0.4;
+
+        HyperExpMoments = @(p, t) [t/p(1,1) + (1-t)/p(1,2), 2 * (t/(p(1,1)^2) + (1-t)/(p(1,2)^2)), 6 * (t/(p(1,1)^3) + ((1-t)/(p(1,2)^3)))];
+        FunctionHyperEM = @(p) (HyperExpMoments(p(1, 1:2), p(1,3)) ./ [firstMoment, secondMoment, thirdMoment] - 1);
+    
+        var = [lam(1,1), lam(1,2), prob];
+
+        resultsOfHyperExpM = fsolve(FunctionHyperEM, var);
+        clc
+
+        HyperExpCDF = @(p, t) 1 - p(1,3) * exp(-p(1,1) * t) - (1 - p(1,3)) * exp(-p(1,2) * t);
+        yHyperExpM = HyperExpCDF(resultsOfHyperExpM, t);
+
+        % Figure
+        figure
+        plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHyperExpM, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
+        legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution', 'Erlang')
+        title("Fittings: " + namesOfDepartments(i))
+    end
+
 end
-
-Uk = d * X;
-
-PSI = X/R;
