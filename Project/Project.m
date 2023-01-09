@@ -2,6 +2,7 @@
 clc, clear
 
 namesOfDepartments = ["Spec", "Design", "Breadbrd", "Software", "Test"];
+namesOfDepartmentsForGraphs = ["Specification", "Design", "Breadboard", "Software", "Test"];
 namesOfDepartments = string(namesOfDepartments);
 
 fileOrigin = "Traces/TraceC-";
@@ -17,6 +18,7 @@ end
 duration.Properties.VariableNames = namesOfDepartments;
 
 N = size(duration, 1);
+options = optimset('Display','off');
 
 %% SPEC
 
@@ -41,8 +43,13 @@ end
 figure;
 plot(durationSpec, (1:N)/N, ".b", tSpec, yErlangSpecCDF', "y");
 %plot(durationSpec, (1:N)/N, "b", tSpec, yGammaSpecCDF', "y");
-legend("Erlang - ", namesOfDepartments(1));
-title("Best fitting: " + namesOfDepartments(1));
+legend("Trace", "Erlang distribution");
+title("Best fitting: " + namesOfDepartmentsForGraphs(1));
+
+fprintf("Specification parameters:\n");
+fprintf("K: %f\n", kSpec);
+fprintf("Lambda: %f\n", lambdaSpec);
+fprintf("\n");
 
 %% DESIGN
 
@@ -67,8 +74,13 @@ end
 figure;
 plot(durationDesign, (1:N)/N, ".b", tDesign, yErlangDesignCDF', "y");
 %plot(durationSpec, (1:N)/N, "b", tSpec, yGammaDesignCDF', "y");
-legend("Erlang - ", namesOfDepartments(2));
-title("Best fitting: " + namesOfDepartments(2));
+legend("Trace", "Erlang distribution");
+title("Best fitting: " + namesOfDepartmentsForGraphs(2));
+
+fprintf("Design parameters:\n");
+fprintf("K: %f\n", kDesign);
+fprintf("Lambda: %f\n", lambdaDesign);
+fprintf("\n");
 
 %% BREADBOARD
 
@@ -93,8 +105,8 @@ if coefficientOfVariationBreadboard > 1
     pBreadboard = 0.4;
     varBreadboard = [lambdaBreadboard(1,1), lambdaBreadboard(1,2), pBreadboard];
 
-    resBreadboard = fsolve(FunctionHyperExpBreadboard, varBreadboard);
-    clc
+    resBreadboard = fsolve(FunctionHyperExpBreadboard, varBreadboard, options);
+    %clc
 
     pBreadboard = resBreadboard(3);
     lambdaBreadboard = resBreadboard(1:2);
@@ -103,10 +115,16 @@ if coefficientOfVariationBreadboard > 1
     yHyperExpBreadboard = HyperExpBreadboardCDF(resBreadboard, tBreadboard);
 
     figure
-    plot(durationBreadboard, (1:N)/N, "b", tBreadboard, yHyperExpBreadboard, "y");
-    legend("Hyper-exponential - ", namesOfDepartments(3));
-    title("Best fitting: " + namesOfDepartments(3));
+    plot(durationBreadboard, (1:N)/N, ".b", tBreadboard, yHyperExpBreadboard, "y");
+    legend("Trace", "Hyper-exponential distribution");
+    title("Best fitting: " + namesOfDepartmentsForGraphs(3));
 end
+
+fprintf("Breadboard parameters:\n");
+fprintf("Lambda 1: %f\n", lambdaBreadboard(1));
+fprintf("Lambda 2: %f\n", lambdaBreadboard(2));
+fprintf("Probability: %f\n", pBreadboard);
+fprintf("\n");
 
 %% SOFTWARE
 
@@ -131,8 +149,8 @@ if coefficientOfVariationSoftware > 1
     pSoftware = 0.4;
     varSoftware = [lambdaSoftware(1,1), lambdaSoftware(1,2), pSoftware];
 
-    resSoftware = fsolve(FunctionHyperExpSoftware, varSoftware);
-    clc
+    resSoftware = fsolve(FunctionHyperExpSoftware, varSoftware, options);
+    %clc
 
     pSoftware = resSoftware(3);
     lambdaSoftware = resSoftware(1:2);
@@ -141,11 +159,16 @@ if coefficientOfVariationSoftware > 1
     yHyperExpSoftware = HyperExpSoftwareCDF(resSoftware, tSoftware);
 
     figure
-    plot(durationSoftware, (1:N)/N, "b", tSoftware, yHyperExpSoftware, "y");
-    legend("Hyper-exponential - ", namesOfDepartments(4));
-    title("Best fitting: " + namesOfDepartments(4));
+    plot(durationSoftware, (1:N)/N, ".b", tSoftware, yHyperExpSoftware, "y");
+    legend("Trace", "Hyper-exponential distribution");
+    title("Best fitting: " + namesOfDepartmentsForGraphs(4));
 end
 
+fprintf("Software parameters:\n");
+fprintf("Lambda 1: %f\n", lambdaSoftware(1));
+fprintf("Lambda 2: %f\n", lambdaSoftware(2));
+fprintf("Probability: %f\n", pSoftware);
+fprintf("\n");
 
 %% TEST
 
@@ -160,10 +183,13 @@ tTest = (0:0.1:maxValueTest);
 yExpTest = 1 - exp(-lambdaTest * tTest);
 
 figure;
-plot(durationTest, (1:N)/N, "b", tTest, yExpTest', "y");
-legend("Exponential - ", namesOfDepartments(5));
-title("Best fitting: " + namesOfDepartments(5));
+plot(durationTest, (1:N)/N, ".b", tTest, yExpTest', "y");
+legend("Trace", "Exponential distribution");
+title("Best fitting: " + namesOfDepartmentsForGraphs(5));
 
+fprintf("Test parameter:\n");
+fprintf("Lambda: %f\n", lambdaTest);
+fprintf("\n");
 
 %% Tests
 
@@ -211,8 +237,8 @@ for i = 1:length(namesOfDepartments)
 
         FunctionHypoExpM = @(p) (HypoExpMoments(p) ./ [firstMoment, secondMoment] - 1);
 
-        resultOfHypoExpM = fsolve(FunctionHypoExpM, pars);
-        clc
+        resultOfHypoExpM = fsolve(FunctionHypoExpM, pars, options);
+        %clc
 
         HypoExpCDF = @(p, t) 1 - 1/(p(1,2) - p(1,1)) * (p(1,2) * exp(-p(1,1) * t) - p(1,1) * exp(-p(1,2) * t));
 
@@ -221,15 +247,15 @@ for i = 1:length(namesOfDepartments)
         if lambda > 0
             % Figure
             figure
-            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHypoExp, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
-            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution', 'Erlang')
-            title("Fittings: " + namesOfDepartments(i))
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, t, yExp, t, yHypoExp, t, yGammaCDF, t, yErlangCDF)
+            legend('Trace', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution', 'Erlang distribution')
+            title("Fittings: " + namesOfDepartmentsForGraphs(i))
         else
             % Figure
             figure
-            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHypoExp, "y", t, yGammaCDF, "c")
-            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution')
-            title("Fittings: " + namesOfDepartments(i))
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, t, yExp, t, yHypoExp, t, yGammaCDF)
+            legend('Trace', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution')
+            title("Fittings: " + namesOfDepartmentsForGraphs(i))
         end
         
     end
@@ -244,8 +270,8 @@ for i = 1:length(namesOfDepartments)
     
         var = [lam(1,1), lam(1,2), prob];
 
-        resultsOfHyperExpM = fsolve(FunctionHyperEM, var);
-        clc
+        resultsOfHyperExpM = fsolve(FunctionHyperEM, var, options);
+        %clc
 
         HyperExpCDF = @(p, t) 1 - p(1,3) * exp(-p(1,1) * t) - (1 - p(1,3)) * exp(-p(1,2) * t);
         yHyperExpM = HyperExpCDF(resultsOfHyperExpM, t);
@@ -253,15 +279,15 @@ for i = 1:length(namesOfDepartments)
         if lambda > 0
             % Figure
             figure
-            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHyperExpM, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
-            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution', 'Erlang')
-            title("Fittings: " + namesOfDepartments(i))
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, t, yExp, t, yHyperExpM, t, yGammaCDF, t, yErlangCDF)
+            legend('Trace', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution', 'Erlang distribution')
+            title("Fittings: " + namesOfDepartmentsForGraphs(i))
         else
             % Figure
             figure
-            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHyperExpM, "y", t, yGammaCDF, "c")
-            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution')
-            title("Fittings: " + namesOfDepartments(i))
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, t, yExp, t, yHyperExpM, t, yGammaCDF)
+            legend('Trace', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution')
+            title("Fittings: " + namesOfDepartmentsForGraphs(i))
         end
     end
 end
