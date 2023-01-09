@@ -27,13 +27,21 @@ coefficientOfVariationSpec = sigmaSpec / firstMomentSpec;
 maxValueSpec = max(durationSpec);
 maxValueSpec = ceil(maxValueSpec);
 tSpec = (0:0.1:maxValueSpec);
-kSpec = 1/(coefficientOfVariationSpec)^2;
-thetaSpec = firstMomentSpec/kSpec;
-yGammaSpecCDF = gamcdf(tSpec, kSpec, thetaSpec);
+
+kSpec = round(1/(coefficientOfVariationSpec^2));
+lambdaSpec = kSpec / firstMomentSpec;
+yErlangSpecCDF = 1;
+for stageSpec = 0:kSpec - 1
+    yErlangSpecCDF = yErlangSpecCDF - ((exp(-lambdaSpec * tSpec) .* (lambdaSpec * tSpec) .^ stageSpec) / (factorial(stageSpec)));
+end
+%kSpec = 1/(coefficientOfVariationSpec)^2;
+%thetaSpec = firstMomentSpec/kSpec;
+%yGammaSpecCDF = gamcdf(tSpec, kSpec, thetaSpec);
 
 figure;
-plot(durationSpec, (1:N)/N, "b", tSpec, yGammaSpecCDF', "y");
-legend("Gamma - ", namesOfDepartments(1));
+plot(durationSpec, (1:N)/N, ".b", tSpec, yErlangSpecCDF', "y");
+%plot(durationSpec, (1:N)/N, "b", tSpec, yGammaSpecCDF', "y");
+legend("Erlang - ", namesOfDepartments(1));
 title("Best fitting: " + namesOfDepartments(1));
 
 %% DESIGN
@@ -45,13 +53,21 @@ coefficientOfVariationDesign = sigmaDesign / firstMomentDesign;
 maxValueDesign = max(durationDesign);
 maxValueDesign = ceil(maxValueDesign);
 tDesign = (0:0.1:maxValueDesign);
-kDesign = 1/(coefficientOfVariationDesign)^2;
-thetaDesign = firstMomentDesign/kDesign;
-yGammaDesignCDF = gamcdf(tDesign, kDesign, thetaDesign);
+
+kDesign = round(1/(coefficientOfVariationDesign^2));
+lambdaDesign = kDesign / firstMomentDesign;
+yErlangDesignCDF = 1;
+for stageDesign = 0:kDesign - 1
+    yErlangDesignCDF = yErlangDesignCDF - ((exp(-lambdaDesign * tDesign) .* (lambdaDesign * tDesign) .^ stageDesign) / (factorial(stageDesign)));
+end
+%kDesign = 1/(coefficientOfVariationDesign)^2;
+%thetaDesign = firstMomentDesign/kDesign;
+%yGammaDesignCDF = gamcdf(tDesign, kDesign, thetaDesign);
 
 figure;
-plot(durationDesign, (1:N)/N, "b", tDesign, yGammaDesignCDF', "y");
-legend("Gamma - ", namesOfDepartments(2));
+plot(durationDesign, (1:N)/N, ".b", tDesign, yErlangDesignCDF', "y");
+%plot(durationSpec, (1:N)/N, "b", tSpec, yGammaDesignCDF', "y");
+legend("Erlang - ", namesOfDepartments(2));
 title("Best fitting: " + namesOfDepartments(2));
 
 %% BREADBOARD
@@ -202,11 +218,20 @@ for i = 1:length(namesOfDepartments)
 
         yHypoExp = HypoExpCDF(resultOfHypoExpM, t);
 
-        % Figure
-        figure
-        plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHypoExp, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
-        legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution', 'Erlang')
-        title("Fittings: " + namesOfDepartments(i))
+        if lambda > 0
+            % Figure
+            figure
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHypoExp, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
+            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution', 'Erlang')
+            title("Fittings: " + namesOfDepartments(i))
+        else
+            % Figure
+            figure
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHypoExp, "y", t, yGammaCDF, "c")
+            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hypo-exponential distribution', 'Gamma distribution')
+            title("Fittings: " + namesOfDepartments(i))
+        end
+        
     end
 
     % Hyper-exponential
@@ -225,11 +250,18 @@ for i = 1:length(namesOfDepartments)
         HyperExpCDF = @(p, t) 1 - p(1,3) * exp(-p(1,1) * t) - (1 - p(1,3)) * exp(-p(1,2) * t);
         yHyperExpM = HyperExpCDF(resultsOfHyperExpM, t);
 
-        % Figure
-        figure
-        plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHyperExpM, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
-        legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution', 'Erlang')
-        title("Fittings: " + namesOfDepartments(i))
+        if lambda > 0
+            % Figure
+            figure
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHyperExpM, "y", t, yGammaCDF, "c", t, yErlangCDF, "m")
+            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution', 'Erlang')
+            title("Fittings: " + namesOfDepartments(i))
+        else
+            % Figure
+            figure
+            plot(durationTemp, (1:N)/N, ".b", t, yUnif, "r", t, yExp, "k", t, yHyperExpM, "y", t, yGammaCDF, "c")
+            legend('Data', 'Uniform distribution', 'Exponential distribution', 'Hyper-exponential distribution', 'Gamma distribution')
+            title("Fittings: " + namesOfDepartments(i))
+        end
     end
-
 end
