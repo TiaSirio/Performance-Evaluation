@@ -37,7 +37,7 @@ Java Modeling Tools (JMT) is a suite of software tools that support the modeling
 19. [A19 - Class Switch](A19)
 20. [A20 - Your Next Assignment](A20)
 
-# Embedded System Development Project 🌐
+## Embedded System Development Project 🌐
 
 Optimize your embedded system development cycle with this project, exploring the parallelized workflow of five independent departments. Utilize PERT diagrams and data traces to strike the right balance between throughput and project completion time. Engage in an optimization challenge to determine the optimal number of simultaneous projects (N).
 
