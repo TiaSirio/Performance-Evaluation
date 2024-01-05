@@ -2,6 +2,18 @@
 
 Explore a series of challenges in Performance Evaluation and Applications through this repository.
 
+## Technologies Used 💻
+
+This repository leverages the power of two key technologies for performance evaluation:
+
+### MATLAB 📈
+
+MATLAB, a widely-used numerical computing environment, provides a robust platform for analyzing data, creating models, and conducting simulations. Its versatility makes it an invaluable tool for tackling a variety of challenges in performance evaluation assignments.
+
+### JMT (Java Modeling Tools) ☕
+
+Java Modeling Tools (JMT) is a suite of software tools that support the modeling, design, and analysis of performance models. Offering a Java-based environment, JMT facilitates the exploration of complex systems, enabling a comprehensive approach to performance evaluation tasks.
+
 ## Assignments 📝
 
 1. [A01 - Workload Types](A01)
