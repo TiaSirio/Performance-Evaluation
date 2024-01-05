@@ -53,7 +53,7 @@ This is the final project of the exam "Performance Evaluation and Applications" 
 
 ## Author 👨‍💻
 
-- Mattia Siriani
+- [TiaSirio](https://www.github.com/TiaSirio)
 
 ## Documentation 📄
 
