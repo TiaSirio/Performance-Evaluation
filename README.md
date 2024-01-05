@@ -41,6 +41,8 @@ Java Modeling Tools (JMT) is a suite of software tools that support the modeling
 
 Optimize your embedded system development cycle with this project, exploring the parallelized workflow of five independent departments. Utilize PERT diagrams and data traces to strike the right balance between throughput and project completion time. Engage in an optimization challenge to determine the optimal number of simultaneous projects (N).
 
+The project is available at this [link](https://github.com/TiaSirio/Embedded-System-Performance).
+
 ## Acknowledgments 👐
 
 - Prof. Gribaudo Marco
