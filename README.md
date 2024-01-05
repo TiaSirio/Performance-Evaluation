@@ -37,9 +37,9 @@ Java Modeling Tools (JMT) is a suite of software tools that support the modeling
 19. [A19 - Class Switch](A19)
 20. [A20 - Your Next Assignment](A20)
 
-## Performance Evaluation Project 📊
+# Embedded System Development Project 🌐
 
-Explore our Performance Evaluation project to delve deeper into real-world applications and hands-on performance assessment.
+Optimize your embedded system development cycle with this project, exploring the parallelized workflow of five independent departments. Utilize PERT diagrams and data traces to strike the right balance between throughput and project completion time. Engage in an optimization challenge to determine the optimal number of simultaneous projects (N).
 
 ## Acknowledgments 👐
 
@@ -56,3 +56,33 @@ This is the final project of the exam "Performance Evaluation and Applications" 
 ## Documentation 📄
 
 In the directory of every assignment there is a pdf file documenting the scope of the assignment.
+
+
+
+# Embedded System Development Cycle Project 🌐
+
+Explore the intricacies of the embedded system development cycle through this project. The development process involves five distinct departments, each capable of working independently, contributing to the creation of boards. The workflow is visualized in a PERT diagram, guiding the seamless progression of the project.
+
+## Project Overview 🔄
+
+In the embedded system development cycle, each department can commence the next project as soon as it completes its current task. This parallelized approach allows for efficient utilization of resources and continuous project advancement.
+
+## Data Traces 📊
+
+The project's progress is tracked through data traces captured in various files:
+
+- `TraceC-Spec.txt`: Specifications phase durations.
+- `TraceC-Design.txt`: Design phase durations.
+- `TraceC-Breadbrd.txt`: Breadboard implementation phase durations.
+- `TraceC-Software.txt`: Software development phase durations.
+- `TraceC-Test.txt`: Testing phase durations.
+
+These traces offer insights into the time durations associated with different phases, measured in hours.
+
+## Optimization Challenge 🚀
+
+The company aims to determine the optimal number of projects, denoted as N, that should be undertaken simultaneously. This optimization seeks to strike the perfect balance between maximizing throughput and minimizing project completion time.
+
+## Author 👨‍💻
+
+- Mattia Siriani
