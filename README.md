@@ -33,6 +33,14 @@ Explore our Performance Evaluation project to delve deeper into real-world appli
 
 - Prof. Gribaudo Marco
 
+## University Course 📖
+
+This is the final project of the exam "Computer Graphics" for the Computer Science and Engineering degree at Polytechnic of Milano.
+
 ## Author 👨‍💻
 
 - Mattia Siriani
+
+## Documentation 📄
+
+In the directory of every assignment there is a pdf file documenting the scope of the assignment.
